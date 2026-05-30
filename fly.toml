@@ -1,0 +1,25 @@
+# Fly.io deploy config.
+# One-time setup before the CI deploy job works:
+#   1. `fly launch --no-deploy --copy-config` to create the app (may rename it)
+#   2. add the FLY_API_TOKEN secret in GitHub repo settings
+# The deploy job skips itself when FLY_API_TOKEN is not set, so CI stays green.
+app = "merchant-os"
+primary_region = "nrt" # Tokyo — closest region to Taiwan
+
+[build]
+
+[deploy]
+  # Run pending migrations on each release before traffic shifts over
+  release_command = "bin/rails db:prepare"
+
+[http_service]
+  internal_port = 80 # matches EXPOSE in the Rails Dockerfile
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

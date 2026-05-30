@@ -104,3 +104,80 @@ jobs:
       - name: Run tests
         run: bin/rspec
 
+  # Catch secrets (API keys, passwords) accidentally committed to git history
+  secret_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # gitleaks needs the full history to scan
+
+      - name: Scan for committed secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Make sure the production Docker image actually builds
+  docker_build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build the image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # Deploy to Fly.io after everything else passes, only on main.
+  # Skips itself when FLY_API_TOKEN is not set, so CI stays green until you add it.
+  deploy:
+    needs: [ scan_ruby, scan_js, lint, test, secret_scan, docker_build ]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up flyctl
+        if: ${{ env.FLY_API_TOKEN != '' }}
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        if: ${{ env.FLY_API_TOKEN != '' }}
+        run: flyctl deploy --remote-only
+
+      - name: Note that deploy was skipped
+        if: ${{ env.FLY_API_TOKEN == '' }}
+        run: echo "FLY_API_TOKEN not set — skipping deploy. Add the secret to enable it."
+
+  # Ping Slack when CI fails. Skips itself when SLACK_WEBHOOK is not set.
+  notify:
+    needs: [ scan_ruby, scan_js, lint, test, secret_scan, docker_build ]
+    runs-on: ubuntu-latest
+    if: failure()
+
+    env:
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+    steps:
+      - name: Post failure message to Slack
+        if: ${{ env.SLACK_WEBHOOK != '' }}
+        run: |
+          curl -sS -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\":red_circle: CI failed — ${{ github.repository }} @ ${{ github.ref_name }}\"}" \
+            "$SLACK_WEBHOOK"
+

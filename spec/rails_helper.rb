@@ -1,4 +1,16 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
+
+# Measure test coverage. Must start before any app code is loaded.
+require "simplecov"
+SimpleCov.start "rails" do
+  add_filter "/spec/"
+  enable_coverage :branch
+
+  # Turn on the hard gate once real domain code lands (step 3 onward).
+  # Every change ships with its test, so this should stay green.
+  # minimum_coverage line: 90, branch: 80
+end
+
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
