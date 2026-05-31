@@ -41,13 +41,29 @@ Not in the core feature list (from other parts of the plan):
 - Code comments: English, plain wording — explain the why, skip the obvious what.
 - Add a feature-specific gem only when its step arrives; don't pre-stack the Gemfile.
 
+## CI
+
+GitHub Actions (`.github/workflows/ci.yml`) runs on every push / PR:
+
+- `scan_ruby` — brakeman + bundler-audit
+- `scan_js` — importmap audit
+- `lint` — rubocop
+- `test` — Postgres + `db:prepare` + rspec; SimpleCov reports coverage (hard gate
+  turned on from step 3 onward)
+- `secret_scan` — gitleaks scans history for committed secrets
+- `docker_build` — builds the production image
+- `deploy` — `flyctl deploy` on main; skips itself unless `FLY_API_TOKEN` is set
+- `notify` — Slack message on failure; skips itself unless `SLACK_WEBHOOK` is set
+
+Dependabot (`.github/dependabot.yml`) opens weekly update PRs for gems and Actions.
+
 ## Roadmap
 
 **Foundation**
 
 1. [x] App scaffold (rails new, Docker, RSpec / RuboCop / Gemfile)
-2. [ ] CI (GitHub Actions: lint + test)
-3. [ ] Auth + multi-tenancy + authorization skeleton (Devise + acts_as_tenant + Pundit)
+2. [x] CI (GitHub Actions: scan, lint, test, docker build, deploy, slack)
+3. [x] Auth + multi-tenancy + authorization skeleton (Devise + acts_as_tenant + Pundit)
 4. [ ] Walking skeleton deployed to Fly.io
 5. [ ] README
 
