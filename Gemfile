@@ -85,4 +85,7 @@ end
 group :test do
   # Test coverage report
   gem "simplecov", require: false
+
+  # Truncate the DB for threaded specs (transactions can't be shared across connections)
+  gem "database_cleaner-active_record"
 end

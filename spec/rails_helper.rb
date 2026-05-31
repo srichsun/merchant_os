@@ -52,10 +52,22 @@ RSpec.configure do |config|
     Rails.root.join('spec/fixtures')
   ]
 
-  # If you're not using ActiveRecord, or you'd prefer not to run each of your
-  # examples within a transaction, remove the following line or assign false
-  # instead of true.
-  config.use_transactional_fixtures = true
+  # DatabaseCleaner handles cleanup instead, so we can truncate (not just roll
+  # back a transaction) for threaded specs that need committed, cross-connection data.
+  config.use_transactional_fixtures = false
+
+  config.before(:suite) { DatabaseCleaner.clean_with(:truncation) }
+
+  # Pick the strategy first...
+  config.before(:each) { DatabaseCleaner.strategy = :transaction }
+  # Tag an example with `:no_transaction` to truncate instead (e.g. thread races)
+  config.before(:each, :no_transaction) { DatabaseCleaner.strategy = :truncation }
+  # ...then start, so `start` reads the strategy chosen above
+  config.before(:each) { DatabaseCleaner.start }
+  config.append_after(:each) { DatabaseCleaner.clean }
+
+  # Don't leak the current tenant between examples
+  config.before(:each) { ActsAsTenant.current_tenant = nil }
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
