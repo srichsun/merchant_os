@@ -21,4 +21,9 @@ class Product < ApplicationRecord
       update!(stock: stock - quantity)
     end
   end
+
+  # price_cents is the source of truth; this is just for display
+  def price
+    price_cents / 100.0
+  end
 end
