@@ -1,0 +1,8 @@
+Thanks for your order!
+
+Order #<%= @order.id %>
+Product:  <%= @order.product.name %>
+Quantity: <%= @order.quantity %>
+Total:    <%= number_to_currency(@order.total_cents / 100.0) %>
+
+We'll let you know when it ships.

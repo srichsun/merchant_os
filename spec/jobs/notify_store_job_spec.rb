@@ -10,4 +10,14 @@ RSpec.describe NotifyStoreJob, type: :job do
       .to change { ActionMailer::Base.deliveries.size }.by(1)
       .and have_enqueued_job(FulfillmentJob).with(order)
   end
+
+  it "also emails the buyer when there's a customer email" do
+    owner = create(:user, role: :owner)
+    order = create(:order, tenant: owner.tenant,
+                           product: create(:product, tenant: owner.tenant, stock: 5),
+                           customer_email: "buyer@example.com")
+
+    expect { NotifyStoreJob.perform_now(order) }
+      .to change { ActionMailer::Base.deliveries.size }.by(2)
+  end
 end

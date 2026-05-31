@@ -36,15 +36,28 @@ RSpec.describe "Storefront", type: :request do
     end
   end
 
+  describe "GET /s/:slug/checkout/:product_id" do
+    it "shows the checkout form" do
+      product = create(:product, tenant: store, name: "Mug", stock: 5)
+
+      get storefront_store_checkout_path(store, product.id)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Checkout", product.name)
+    end
+  end
+
   describe "POST /s/:slug/orders" do
-    it "places a paid order and takes stock" do
+    it "places a paid order with the buyer's email and takes stock" do
       product = create(:product, tenant: store, stock: 3)
 
       expect do
-        post storefront_store_orders_path(store, product_id: product.id)
+        post storefront_store_orders_path(store, product_id: product.id,
+          order: { quantity: 1, customer_email: "buyer@example.com" })
       end.to change { store.orders.where(aasm_state: "paid").count }.by(1)
 
       expect(product.reload.stock).to eq(2)
+      expect(store.orders.last.customer_email).to eq("buyer@example.com")
     end
 
     it "shows a sold-out message when there's no stock" do
