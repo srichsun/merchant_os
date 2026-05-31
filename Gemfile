@@ -46,6 +46,7 @@ gem "image_processing", "~> 1.2"
 gem "devise"          # Authentication: sign up, log in, password, session
 gem "pundit"          # Authorization: owner / staff permissions
 gem "acts_as_tenant"  # Row-level multi-tenancy, auto-scopes by tenant_id
+gem "aasm"            # Order state machine (pending -> paid -> shipped)
 
 group :development, :test do
   # Testing
