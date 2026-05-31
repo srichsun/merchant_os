@@ -1,30 +1,27 @@
-<div class="mx-auto max-w-sm rounded-lg border bg-white p-8 shadow-sm">
-  <h2 class="mb-6 text-xl font-bold">Log in</h2>
+<div class="panel mx-auto max-w-sm p-8">
+  <h2 class="display mb-6 text-2xl font-bold">Log in</h2>
 
   <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
     <div class="mb-4">
-      <%= f.label :email, class: "mb-1 block text-sm font-medium" %>
-      <%= f.email_field :email, autofocus: true, autocomplete: "email",
-            class: "w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" %>
+      <%= f.label :email, class: "field-label" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "field-input" %>
     </div>
 
     <div class="mb-4">
-      <%= f.label :password, class: "mb-1 block text-sm font-medium" %>
-      <%= f.password_field :password, autocomplete: "current-password",
-            class: "w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" %>
+      <%= f.label :password, class: "field-label" %>
+      <%= f.password_field :password, autocomplete: "current-password", class: "field-input" %>
     </div>
 
     <% if devise_mapping.rememberable? %>
-      <label class="mb-6 flex items-center gap-2 text-sm text-gray-600">
-        <%= f.check_box :remember_me, class: "rounded border-gray-300" %>
-        <%= t("devise.sessions.new.remember_me", default: "Remember me") %>
+      <label class="mb-6 flex items-center gap-2 text-sm soft">
+        <%= f.check_box :remember_me %> Remember me
       </label>
     <% end %>
 
-    <%= f.submit "Log in", class: "w-full cursor-pointer rounded bg-gray-900 px-4 py-2 font-medium text-white hover:bg-gray-700" %>
+    <%= f.submit "Log in", class: "btn w-full text-center" %>
   <% end %>
 
-  <div class="mt-6 text-sm text-gray-500">
+  <div class="mt-6 text-sm">
     <%= render "devise/shared/links" %>
   </div>
 </div>

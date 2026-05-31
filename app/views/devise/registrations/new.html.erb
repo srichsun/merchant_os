@@ -1,40 +1,36 @@
-<div class="mx-auto max-w-sm rounded-lg border bg-white p-8 shadow-sm">
-  <h2 class="mb-6 text-xl font-bold">Create your store</h2>
+<div class="panel mx-auto max-w-sm p-8">
+  <h2 class="display mb-6 text-2xl font-bold">Create your store</h2>
 
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
     <%= render "devise/shared/error_messages", resource: resource %>
 
     <div class="mb-4">
-      <%= label_tag :"user[store_name]", "Store name", class: "mb-1 block text-sm font-medium" %>
-      <%= text_field_tag "user[store_name]", params.dig(:user, :store_name), autofocus: true,
-            class: "w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" %>
+      <%= label_tag :"user[store_name]", "Store name", class: "field-label" %>
+      <%= text_field_tag "user[store_name]", params.dig(:user, :store_name), autofocus: true, class: "field-input" %>
     </div>
 
     <div class="mb-4">
-      <%= f.label :email, class: "mb-1 block text-sm font-medium" %>
-      <%= f.email_field :email, autocomplete: "email",
-            class: "w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" %>
+      <%= f.label :email, class: "field-label" %>
+      <%= f.email_field :email, autocomplete: "email", class: "field-input" %>
     </div>
 
     <div class="mb-4">
-      <%= f.label :password, class: "mb-1 block text-sm font-medium" %>
+      <%= f.label :password, class: "field-label" %>
       <% if @minimum_password_length %>
-        <span class="text-xs text-gray-500">(<%= @minimum_password_length %> characters minimum)</span>
+        <span class="text-xs muted">(<%= @minimum_password_length %> characters minimum)</span>
       <% end %>
-      <%= f.password_field :password, autocomplete: "new-password",
-            class: "w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "field-input" %>
     </div>
 
     <div class="mb-6">
-      <%= f.label :password_confirmation, class: "mb-1 block text-sm font-medium" %>
-      <%= f.password_field :password_confirmation, autocomplete: "new-password",
-            class: "w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" %>
+      <%= f.label :password_confirmation, "Confirm password", class: "field-label" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "field-input" %>
     </div>
 
-    <%= f.submit "Sign up", class: "w-full cursor-pointer rounded bg-gray-900 px-4 py-2 font-medium text-white hover:bg-gray-700" %>
+    <%= f.submit "Sign up", class: "btn w-full text-center" %>
   <% end %>
 
-  <div class="mt-6 text-sm text-gray-500">
+  <div class="mt-6 text-sm">
     <%= render "devise/shared/links" %>
   </div>
 </div>

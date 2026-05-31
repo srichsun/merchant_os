@@ -1,19 +1,18 @@
-<div class="mx-auto max-w-sm rounded-lg border bg-white p-8 shadow-sm">
-  <h2 class="mb-6 text-xl font-bold">Forgot your password?</h2>
+<div class="panel mx-auto max-w-sm p-8">
+  <h2 class="display mb-6 text-2xl font-bold">Forgot your password?</h2>
 
   <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
     <%= render "devise/shared/error_messages", resource: resource %>
 
     <div class="mb-6">
-      <%= f.label :email, class: "mb-1 block text-sm font-medium" %>
-      <%= f.email_field :email, autofocus: true, autocomplete: "email",
-            class: "w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" %>
+      <%= f.label :email, class: "field-label" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "field-input" %>
     </div>
 
-    <%= f.submit "Send reset instructions", class: "w-full cursor-pointer rounded bg-gray-900 px-4 py-2 font-medium text-white hover:bg-gray-700" %>
+    <%= f.submit "Send reset instructions", class: "btn w-full text-center" %>
   <% end %>
 
-  <div class="mt-6 text-sm text-gray-500">
+  <div class="mt-6 text-sm">
     <%= render "devise/shared/links" %>
   </div>
 </div>

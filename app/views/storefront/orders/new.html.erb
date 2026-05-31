@@ -1,29 +1,25 @@
-<div class="mx-auto max-w-md rounded-lg border bg-white p-8 shadow-sm">
-  <h1 class="mb-1 text-xl font-bold">Checkout</h1>
-  <p class="mb-6 text-gray-500">
-    <%= @product.name %> — <%= number_to_currency(@product.price) %>
-    (<%= @product.stock %> in stock)
+<div class="panel mx-auto max-w-md p-8">
+  <h1 class="display text-2xl font-bold">Checkout</h1>
+  <p class="mt-1 mb-6 soft">
+    <%= @product.name %> · <span class="gold"><%= number_to_currency(@product.price) %></span>
+    <span class="muted">(<%= @product.stock %> in stock)</span>
   </p>
 
-  <%= form_with url: storefront_store_orders_path(@store), method: :post do |f| %>
+  <%= form_with url: storefront_store_orders_path(@store), method: :post do %>
     <%= hidden_field_tag :product_id, @product.id %>
 
     <div class="mb-4">
-      <%= label_tag "order[customer_email]", "Email", class: "mb-1 block text-sm font-medium" %>
-      <%= email_field_tag "order[customer_email]", nil, required: true,
-            class: "w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" %>
+      <%= label_tag "order[customer_email]", "Email", class: "field-label" %>
+      <%= email_field_tag "order[customer_email]", nil, required: true, class: "field-input" %>
     </div>
 
     <div class="mb-6">
-      <%= label_tag "order[quantity]", "Quantity", class: "mb-1 block text-sm font-medium" %>
-      <%= number_field_tag "order[quantity]", 1, min: 1, max: @product.stock,
-            class: "w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" %>
+      <%= label_tag "order[quantity]", "Quantity", class: "field-label" %>
+      <%= number_field_tag "order[quantity]", 1, min: 1, max: @product.stock, class: "field-input" %>
     </div>
 
-    <%= f.submit "Pay now (mock)",
-          class: "w-full cursor-pointer rounded bg-gray-900 px-4 py-2 font-medium text-white hover:bg-gray-700" %>
+    <%= submit_tag "Pay now", class: "btn w-full text-center" %>
   <% end %>
 
-  <%= link_to "← Back to store", storefront_store_path(@store),
-        class: "mt-4 inline-block text-sm text-gray-500" %>
+  <%= link_to "← Back to store", storefront_store_path(@store), class: "link-soft mt-5 inline-block text-sm" %>
 </div>

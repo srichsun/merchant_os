@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+/* ---- Dark + gold theme (shared by the app + storefront layouts) ---- */
+:root {
+  --bg: #080808;
+  --surface: #111111;
+  --surface-2: #161616;
+  --border: #1e1e1e;
+  --border-strong: #2a2620;
+  --gold: #c9a84c;
+  --gold-dim: #8a6f30;
+  --gold-soft: rgba(201, 168, 76, .08);
+  --white: #f0ece4;
+  --soft: #a09890;
+  --muted: #6b6560;
+}
+
+body { background: var(--bg); color: var(--white); font-family: "Inter", system-ui, sans-serif; }
+.display { font-family: "Playfair Display", Georgia, serif; }
+.mono { font-family: "Martian Mono", ui-monospace, monospace; }
+::selection { background: var(--gold); color: var(--bg); }
+
+/* surfaces */
+.panel { background: var(--surface); border: 1px solid var(--border); }
+
+/* labels / inputs */
+.field-label { display: block; font-size: 13px; color: var(--soft); margin-bottom: 6px; }
+.field-input {
+  width: 100%; background: #0c0c0c; border: 1px solid var(--border-strong);
+  color: var(--white); padding: 11px 14px; font-size: 14px;
+}
+.field-input::placeholder { color: var(--muted); }
+.field-input:focus { outline: none; border-color: var(--gold); }
+
+/* buttons */
+.btn {
+  display: inline-block; font-family: "Martian Mono", monospace; font-size: 12px;
+  letter-spacing: .12em; text-transform: uppercase; padding: 12px 20px; cursor: pointer;
+  background: var(--gold); color: var(--bg); border: 1px solid var(--gold); text-decoration: none;
+  transition: background .2s ease, border-color .2s ease;
+}
+.btn:hover { background: #d9b95e; }
+.btn-ghost { background: transparent; color: var(--gold); }
+.btn-ghost:hover { background: var(--gold-soft); border-color: var(--gold); }
+
+/* misc */
+.gold { color: var(--gold); }
+.soft { color: var(--soft); }
+.muted { color: var(--muted); }
+.link-soft { color: var(--soft); text-decoration: underline; }
+.link-soft:hover { color: var(--gold); }
+.chip { background: var(--surface); border: 1px solid var(--border); padding: 8px 16px; font-size: 14px; }
+.kicker {
+  font-family: "Martian Mono", monospace; font-size: 11px; letter-spacing: .28em;
+  text-transform: uppercase; color: var(--gold);
+}

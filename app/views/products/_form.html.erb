@@ -1,6 +1,6 @@
 <%= form_with model: product do |f| %>
   <% if product.errors.any? %>
-    <div class="mb-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+    <div class="mb-4 border border-red-900/50 bg-[#170f0f] p-3 text-sm text-red-300">
       <ul class="list-inside list-disc">
         <% product.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -10,25 +10,22 @@
   <% end %>
 
   <div class="mb-4">
-    <%= f.label :name, class: "mb-1 block text-sm font-medium" %>
-    <%= f.text_field :name,
-          class: "w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" %>
+    <%= f.label :name, class: "field-label" %>
+    <%= f.text_field :name, class: "field-input" %>
   </div>
 
   <div class="mb-4">
-    <%= f.label :price_cents, "Price (in cents)", class: "mb-1 block text-sm font-medium" %>
-    <%= f.number_field :price_cents,
-          class: "w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" %>
+    <%= f.label :price_cents, "Price (in cents)", class: "field-label" %>
+    <%= f.number_field :price_cents, class: "field-input" %>
   </div>
 
   <div class="mb-6">
-    <%= f.label :stock, class: "mb-1 block text-sm font-medium" %>
-    <%= f.number_field :stock,
-          class: "w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-500 focus:outline-none" %>
+    <%= f.label :stock, class: "field-label" %>
+    <%= f.number_field :stock, class: "field-input" %>
   </div>
 
-  <div class="flex items-center gap-3">
-    <%= f.submit class: "cursor-pointer rounded bg-gray-900 px-4 py-2 font-medium text-white hover:bg-gray-700" %>
-    <%= link_to "Cancel", products_path, class: "text-sm text-gray-500" %>
+  <div class="flex items-center gap-4">
+    <%= f.submit "Save", class: "btn" %>
+    <%= link_to "Cancel", products_path, class: "link-soft text-sm" %>
   </div>
 <% end %>

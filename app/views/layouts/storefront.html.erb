@@ -1,38 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= content_for(:title) || "MerchantOS" %></title>
+    <title><%= @store&.name || "Store" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="MerchantOS">
-    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= yield :head %>
-
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600&family=Martian+Mono:wght@400;500&display=swap" rel="stylesheet">
-
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body class="min-h-screen">
     <header class="border-b border-[#1e1e1e] bg-[#0c0c0c]">
-      <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-        <%= link_to root_path, class: "display text-xl font-bold tracking-tight" do %>
-          Merchant<span class="gold">OS</span>
-        <% end %>
-        <% if user_signed_in? %>
-          <%= button_to "Log out", destroy_user_session_path, method: :delete,
-                class: "mono text-xs uppercase tracking-widest text-[#a09890] hover:text-[#c9a84c]" %>
-        <% end %>
+      <div class="mx-auto max-w-5xl px-6 py-6">
+        <a href="<%= storefront_store_path(@store) %>" class="display text-2xl font-bold tracking-tight">
+          <%= @store.name %>
+        </a>
       </div>
     </header>
 
@@ -50,5 +35,9 @@
     <main class="mx-auto max-w-5xl px-6 py-12">
       <%= yield %>
     </main>
+
+    <footer class="mx-auto max-w-5xl px-6 py-12 mono text-xs tracking-widest muted">
+      <%= @store.name %> · POWERED BY MERCHANTOS
+    </footer>
   </body>
 </html>
