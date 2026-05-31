@@ -23,8 +23,29 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="min-h-screen bg-gray-50 text-gray-900">
+    <header class="border-b bg-white">
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+        <%= link_to "MerchantOS", root_path, class: "text-lg font-bold tracking-tight" %>
+        <% if user_signed_in? %>
+          <%= button_to "Log out", destroy_user_session_path, method: :delete,
+                class: "text-sm text-gray-500 hover:text-gray-900" %>
+        <% end %>
+      </div>
+    </header>
+
+    <% if notice %>
+      <div class="mx-auto mt-4 max-w-5xl px-6">
+        <p class="rounded bg-green-100 px-4 py-2 text-sm text-green-800"><%= notice %></p>
+      </div>
+    <% end %>
+    <% if alert %>
+      <div class="mx-auto mt-4 max-w-5xl px-6">
+        <p class="rounded bg-red-100 px-4 py-2 text-sm text-red-800"><%= alert %></p>
+      </div>
+    <% end %>
+
+    <main class="mx-auto max-w-5xl px-6 py-10">
       <%= yield %>
     </main>
   </body>
