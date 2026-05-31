@@ -2,10 +2,6 @@
 
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  # Hosted Postgres (PG15+) blocks creating tables in the shared "public" schema.
-  # Create our own schema (owned by the app user) so db:prepare can build there.
-  # Matches schema_search_path "app,public" in config/database.yml.
-  ./bin/rails runner "ActiveRecord::Base.connection.execute('CREATE SCHEMA IF NOT EXISTS app')"
   ./bin/rails db:prepare
 fi
 
