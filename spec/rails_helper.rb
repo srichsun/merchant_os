@@ -77,6 +77,12 @@ RSpec.configure do |config|
   # To enable this behaviour uncomment the line below.
   # config.infer_spec_type_from_file_location!
 
+  # Use `build`/`create` directly instead of `FactoryBot.build`
+  config.include FactoryBot::Syntax::Methods
+
+  # Let request specs call `sign_in` / `sign_out`
+  config.include Devise::Test::IntegrationHelpers, type: :request
+
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
