@@ -3,6 +3,7 @@ class Tenant < ApplicationRecord
   # via acts_as_tenant on those models (added as we build them).
   has_many :users, dependent: :destroy
   has_many :products, dependent: :destroy
+  has_many :orders, dependent: :destroy
 
   validates :name, presence: true
 end
