@@ -1,9 +1,16 @@
 class Product < ApplicationRecord
+  include PgSearch::Model
+
   # Raised when a buyer tries to take more units than are in stock
   class InsufficientStock < StandardError; end
 
   # Scopes every query to the current store; also adds belongs_to :tenant
   acts_as_tenant :tenant
+
+  # Trigram search handles partial matches and Chinese substrings without ES
+  pg_search_scope :search_by_name,
+                  against: :name,
+                  using: { trigram: { word_similarity: true } }
 
   validates :name, presence: true
   validates :price_cents, numericality: { greater_than_or_equal_to: 0, only_integer: true }

@@ -15,6 +15,10 @@
     </div>
   </dl>
 
-  <%= link_to "Manage products →", products_path,
-        class: "mt-6 inline-block font-medium text-gray-900 underline" %>
+  <div class="mt-6 flex gap-4">
+    <%= link_to "Manage products →", products_path,
+          class: "font-medium text-gray-900 underline" %>
+    <%= link_to "View storefront →", storefront_store_path(@tenant),
+          class: "font-medium text-gray-900 underline" %>
+  </div>
 </div>

@@ -13,6 +13,19 @@ RSpec.describe Product, type: :model do
     expect(build(:product, stock: -1)).not_to be_valid
   end
 
+  describe ".search_by_name" do
+    it "finds products by a partial name and skips non-matches" do
+      tenant = create(:tenant)
+      mug = create(:product, tenant: tenant, name: "Blue Ceramic Mug")
+      create(:product, tenant: tenant, name: "Wooden Spoon")
+
+      results = tenant.products.search_by_name("ceramic")
+
+      expect(results).to include(mug)
+      expect(results.map(&:name)).not_to include("Wooden Spoon")
+    end
+  end
+
   describe "#sell!" do
     it "reduces stock" do
       product = create(:product, stock: 5)

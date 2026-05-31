@@ -7,7 +7,13 @@ class ProductsController < ApplicationController
 
   def index
     # acts_as_tenant already limits this to the current store
-    @products = policy_scope(Product).order(created_at: :desc)
+    scope = policy_scope(Product)
+    @products =
+      if params[:q].present?
+        scope.search_by_name(params[:q]) # ordered by match rank
+      else
+        scope.order(created_at: :desc)
+      end
   end
 
   def new

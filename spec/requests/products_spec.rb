@@ -15,6 +15,17 @@ RSpec.describe "Products", type: :request do
       expect(response.body).to include(mine.name)
       expect(response.body).not_to include(theirs.name)
     end
+
+    it "filters by the search query" do
+      create(:product, tenant: tenant, name: "Ceramic Mug")
+      create(:product, tenant: tenant, name: "Wooden Spoon")
+      sign_in owner
+
+      get products_path, params: { q: "ceramic" }
+
+      expect(response.body).to include("Ceramic Mug")
+      expect(response.body).not_to include("Wooden Spoon")
+    end
   end
 
   describe "POST /products" do
