@@ -18,6 +18,20 @@
       <%= number_field_tag "order[quantity]", 1, min: 1, max: @product.stock, class: "field-input" %>
     </div>
 
+    <fieldset class="mb-6">
+      <legend class="field-label">Payment method</legend>
+      <div class="space-y-2">
+        <label class="flex cursor-pointer items-center gap-3 border border-[#2a2620] bg-[#0c0c0c] px-4 py-3 transition has-[:checked]:border-[#c9a84c]">
+          <%= radio_button_tag :payment_method, "stripe", true, class: "accent-[#c9a84c]" %>
+          <span class="text-sm">Credit card <span class="muted">· Stripe</span></span>
+        </label>
+        <label class="flex cursor-pointer items-center gap-3 border border-[#2a2620] bg-[#0c0c0c] px-4 py-3 transition has-[:checked]:border-[#c9a84c]">
+          <%= radio_button_tag :payment_method, "ecpay", false, class: "accent-[#c9a84c]" %>
+          <span class="text-sm">ECPay <span class="muted">· 綠界</span></span>
+        </label>
+      </div>
+    </fieldset>
+
     <%= submit_tag "Pay now", class: "btn w-full text-center" %>
   <% end %>
 

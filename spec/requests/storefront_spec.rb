@@ -60,8 +60,9 @@ RSpec.describe "Storefront", type: :request do
   end
 
   describe "POST /s/:slug/orders" do
-    it "creates a pending order and hands off to ECPay" do
+    it "creates a pending order and redirects to Stripe by default" do
       product = create(:product, tenant: store, stock: 3)
+      allow(StripeCheckout).to receive(:session_url).and_return("https://checkout.stripe.test/s/abc")
 
       expect do
         post storefront_store_orders_path(store, product_id: product.id,
@@ -71,6 +72,15 @@ RSpec.describe "Storefront", type: :request do
       order = store.orders.last
       expect(order.customer_email).to eq("buyer@example.com")
       expect(order.payment_ref).to be_present
+      expect(response).to redirect_to("https://checkout.stripe.test/s/abc")
+    end
+
+    it "hands off to ECPay when chosen" do
+      product = create(:product, tenant: store, stock: 3)
+
+      post storefront_store_orders_path(store, product_id: product.id,
+        payment_method: "ecpay", order: { quantity: 1, customer_email: "buyer@example.com" })
+
       expect(response.body).to include(Ecpay.checkout_url) # auto-submit form action
     end
   end

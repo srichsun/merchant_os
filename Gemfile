@@ -107,3 +107,6 @@ gem "pagy", "~> 9.0"
 # REST API auth + rate limiting
 gem "jwt"
 gem "rack-attack"
+
+# Payments — Stripe (hosted Checkout + verified webhook)
+gem "stripe"

@@ -18,8 +18,9 @@ Rails.application.routes.draw do
     post ":store_slug/orders", to: "orders#create", as: :store_orders
   end
 
-  # ECPay server-to-server payment notification (verified, no CSRF/login)
+  # Payment webhooks (verified, no CSRF/login)
   post "payments/ecpay/callback", to: "payments/ecpay#callback", as: :payments_ecpay_callback
+  post "payments/stripe/webhook", to: "payments/stripe#webhook", as: :payments_stripe_webhook
 
   # JSON API (JWT auth)
   namespace :api do
