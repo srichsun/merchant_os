@@ -5,24 +5,23 @@
 #   owner@example.com  / staff@example.com   -> Demo Store
 #   owner2@example.com                        -> Coffee Lab
 
-SEED_IMAGES = Dir[Rails.root.join("db/seeds/images/*.jpg")].sort unless defined?(SEED_IMAGES)
-
-# Attach a demo photo (round-robin through the bundled images). Wrapped in a
+# Attach the product's demo photo (db/seeds/images/<filename>). Wrapped in a
 # rescue so a missing/misconfigured object store never breaks the boot-time seed.
-def attach_demo_image(product, index)
-  return if SEED_IMAGES.empty?
+def attach_demo_image(product, filename)
+  return if filename.blank?
+
+  path = Rails.root.join("db/seeds/images", filename)
+  return unless File.exist?(path)
 
   if product.image.attached?
-    return if demo_image_present?(product)
+    # Keep it only if it's the expected photo and actually readable; otherwise
+    # re-upload (covers an earlier storage config or a swapped-in image).
+    return if product.image.blob.filename.to_s == filename && demo_image_present?(product)
 
-    # The blob record exists but its file is missing/unreadable on the current
-    # store (e.g. seeded against an earlier storage config). Drop it and
-    # re-upload so the original is actually there for variant processing.
     product.image.purge
   end
 
-  path = SEED_IMAGES[index % SEED_IMAGES.size]
-  product.image.attach(io: File.open(path), filename: File.basename(path), content_type: "image/jpeg")
+  product.image.attach(io: File.open(path), filename: filename, content_type: "image/jpeg")
 rescue => e
   warn "Skipped image for #{product.name}: #{e.message}"
 end
@@ -52,12 +51,12 @@ def seed_store(name:, owner_email:, staff_email: nil, products:)
     end
   end
 
-  products.each_with_index do |attrs, i|
+  products.each do |attrs|
     product = store.products.find_or_create_by!(name: attrs[:name]) do |p|
       p.price_cents = attrs[:price_cents]
       p.stock = attrs[:stock]
     end
-    attach_demo_image(product, i)
+    attach_demo_image(product, attrs[:image])
   end
 
   store
@@ -68,14 +67,14 @@ demo = seed_store(
   owner_email: "owner@example.com",
   staff_email: "staff@example.com",
   products: [
-    { name: "Cold Brew Coffee",   price_cents: 12_000, stock: 50 },
-    { name: "Ceramic Mug",        price_cents: 38_000, stock: 20 },
-    { name: "Pour-over Dripper",  price_cents: 45_000, stock: 15 },
-    { name: "Paper Filters ×100", price_cents: 18_000, stock: 80 },
-    { name: "Stainless Tumbler",  price_cents: 52_000, stock: 12 },
-    { name: "Coffee Beans 250g",  price_cents: 36_000, stock: 40 },
-    { name: "Gift Box Set",       price_cents: 88_000, stock: 8 },
-    { name: "Tote Bag",           price_cents: 25_000, stock: 0 } # sold out
+    { name: "Cold Brew Coffee",   price_cents: 12_000, stock: 50, image: "cold-brew-coffee.jpg" },
+    { name: "Ceramic Mug",        price_cents: 38_000, stock: 20, image: "ceramic-mug.jpg" },
+    { name: "Pour-over Dripper",  price_cents: 45_000, stock: 15, image: "pour-over-dripper.jpg" },
+    { name: "Paper Filters ×100", price_cents: 18_000, stock: 80, image: "paper-filters.jpg" },
+    { name: "Stainless Tumbler",  price_cents: 52_000, stock: 12, image: "stainless-tumbler.jpg" },
+    { name: "Coffee Beans 250g",  price_cents: 36_000, stock: 40, image: "coffee-beans.jpg" },
+    { name: "Gift Box Set",       price_cents: 88_000, stock: 8, image: "gift-box-set.jpg" },
+    { name: "Tote Bag",           price_cents: 25_000, stock: 0, image: "tote-bag.jpg" } # sold out
   ]
 )
 
@@ -83,9 +82,9 @@ seed_store(
   name: "Coffee Lab",
   owner_email: "owner2@example.com",
   products: [
-    { name: "Espresso Beans 1kg", price_cents: 60_000, stock: 30 },
-    { name: "Pour-over Kettle",   price_cents: 95_000, stock: 8 },
-    { name: "Milk Frother",       price_cents: 42_000, stock: 18 }
+    { name: "Espresso Beans 1kg", price_cents: 60_000, stock: 30, image: "espresso-beans.jpg" },
+    { name: "Pour-over Kettle",   price_cents: 95_000, stock: 8, image: "pour-over-kettle.jpg" },
+    { name: "Milk Frother",       price_cents: 42_000, stock: 18, image: "milk-frother.jpg" }
   ]
 )
 
