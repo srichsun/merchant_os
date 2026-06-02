@@ -218,19 +218,19 @@
         <div class="card"><div class="ptag">State machine</div><h3>訂單狀態機</h3><p>AASM 管理 pending → paid → shipped,付款失敗整筆 rollback、不重複付款。</p></div>
         <div class="card"><div class="ptag">Background jobs</div><h3>背景任務鏈</h3><p>付款成功後觸發:通知店家 → 寄買家確認信 → 出貨準備的 job 鏈。</p></div>
         <div class="card"><div class="ptag">Search</div><h3>商品搜尋</h3><p>pg_search 以 Postgres trigram 搜尋,支援部分比對與中文,不另外架 Elasticsearch。</p></div>
-        <div class="card"><div class="ptag">Storefront</div><h3>公開店面 + 結帳</h3><p>免登入店面,瀏覽/搜尋/下單;結帳串接綠界(ECPay)金流,付款後寄出確認信。</p></div>
+        <div class="card"><div class="ptag">Storefront</div><h3>公開店面 + 結帳</h3><p>免登入店面,瀏覽/搜尋/下單;結帳可選 Stripe 或綠界(ECPay)金流,付款後寄出確認信。</p></div>
       </div>
     </section>
 
     <section data-reveal>
       <span class="section-label">Checkout</span>
       <h2>結帳金流流程</h2>
-      <p class="intro">串接綠界(ECPay):導頁付款 + webhook 驗章,跟業界 hosted 金流同一套。</p>
+      <p class="intro">買家可選 Stripe(信用卡)或綠界(ECPay)——兩者都是「導頁付款 + webhook 驗證」的 hosted 流程,共用同一套訂單狀態機,展示可插拔的金流設計。</p>
       <div class="flow">
-        <div class="step"><div class="n">01</div><h3>建立訂單</h3><p>結帳時先建一筆 pending 訂單與交易編號。</p></div>
-        <div class="step"><div class="n">02</div><h3>導去綠界</h3><p>帶簽章參數導到綠界付款頁,買家在綠界完成付款。</p></div>
-        <div class="step"><div class="n">03</div><h3>驗章 webhook</h3><p>綠界 server 回呼,後端重算 CheckMacValue 比對,確認沒被竄改。</p></div>
-        <div class="step"><div class="n">04</div><h3>標記付款</h3><p>驗章通過才轉為 paid 並觸發通知;重複回呼不重複處理。</p></div>
+        <div class="step"><div class="n">01</div><h3>建立訂單</h3><p>結帳時先建一筆 pending 訂單與交易編號,並選擇付款方式。</p></div>
+        <div class="step"><div class="n">02</div><h3>導去金流</h3><p>導到 Stripe Checkout 或綠界付款頁,買家在金流端完成付款。</p></div>
+        <div class="step"><div class="n">03</div><h3>驗證 webhook</h3><p>金流 server 回呼,後端驗證簽章(Stripe 簽章 / 綠界 CheckMacValue),確認沒被竄改。</p></div>
+        <div class="step"><div class="n">04</div><h3>標記付款</h3><p>驗證通過才轉為 paid 並觸發通知;重複回呼不重複處理。</p></div>
       </div>
     </section>
 
@@ -253,7 +253,7 @@
       <div class="chips">
         <span class="chip">Rails 8</span><span class="chip">PostgreSQL</span><span class="chip">Hotwire</span>
         <span class="chip">Devise</span><span class="chip">Pundit</span><span class="chip">acts_as_tenant</span>
-        <span class="chip">AASM</span><span class="chip">pg_search</span><span class="chip">Sidekiq</span>
+        <span class="chip">AASM</span><span class="chip">pg_search</span><span class="chip">Stripe</span><span class="chip">Sidekiq</span>
         <span class="chip">Sentry</span><span class="chip">RSpec</span><span class="chip">Docker</span>
         <span class="chip">GitHub Actions</span><span class="chip">Render</span>
       </div>
