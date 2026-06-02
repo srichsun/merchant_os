@@ -15,6 +15,9 @@ class ApplicationController < ActionController::Base
   set_current_tenant_through_filter
   before_action :set_current_tenant
 
+  # Tag Sentry errors with who/which store hit them (no-op unless Sentry is on)
+  before_action :set_sentry_context
+
   # Turn a failed permission check into a friendly redirect instead of a 500
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
@@ -30,6 +33,13 @@ class ApplicationController < ActionController::Base
 
   def set_current_tenant
     ActsAsTenant.current_tenant = current_user&.tenant
+  end
+
+  def set_sentry_context
+    return unless defined?(Sentry) && Sentry.initialized?
+
+    Sentry.set_user(id: current_user&.id)
+    Sentry.set_tags(tenant_id: ActsAsTenant.current_tenant&.id)
   end
 
   def user_not_authorized
