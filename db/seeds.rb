@@ -18,9 +18,15 @@ def attach_demo_image(product, filename)
     product.image.attach(io: File.open(path), filename: filename, content_type: "image/jpeg")
   end
 
-  # Pre-generate the :card thumbnail now so the storefront serves a ready-made
-  # variant instead of processing it on the first request (visible lag otherwise).
-  product.image.variant(:card).processed
+  # Pre-generate the :card thumbnail so the storefront serves a ready-made
+  # variant instead of processing it on the first request (visible lag).
+  # Best effort: skip where libvips isn't installed (e.g. CI) — LoadError isn't
+  # a StandardError, so catch it explicitly; the variant is made on demand there.
+  begin
+    product.image.variant(:card).processed
+  rescue StandardError, LoadError => e
+    warn "Skipped thumbnail pre-gen for #{product.name}: #{e.message}"
+  end
 rescue => e
   warn "Skipped image for #{product.name}: #{e.message}"
 end
