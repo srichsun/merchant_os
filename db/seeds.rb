@@ -10,7 +10,17 @@ SEED_IMAGES = Dir[Rails.root.join("db/seeds/images/*.jpg")].sort unless defined?
 # Attach a demo photo (round-robin through the bundled images). Wrapped in a
 # rescue so a missing/misconfigured object store never breaks the boot-time seed.
 def attach_demo_image(product, index)
-  return if product.image.attached? || SEED_IMAGES.empty?
+  return if SEED_IMAGES.empty?
+
+  current_service = ActiveStorage::Blob.service.name.to_s
+  if product.image.attached?
+    # Already on the right store -> nothing to do. If it was attached on a
+    # different service (e.g. local disk before Tigris was configured), the
+    # original file is gone, so purge and re-upload to the current service.
+    return if product.image.blob.service_name.to_s == current_service
+
+    product.image.purge
+  end
 
   path = SEED_IMAGES[index % SEED_IMAGES.size]
   product.image.attach(io: File.open(path), filename: File.basename(path), content_type: "image/jpeg")
