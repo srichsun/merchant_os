@@ -12,13 +12,12 @@ SEED_IMAGES = Dir[Rails.root.join("db/seeds/images/*.jpg")].sort unless defined?
 def attach_demo_image(product, index)
   return if SEED_IMAGES.empty?
 
-  current_service = ActiveStorage::Blob.service.name.to_s
   if product.image.attached?
-    # Already on the right store -> nothing to do. If it was attached on a
-    # different service (e.g. local disk before Tigris was configured), the
-    # original file is gone, so purge and re-upload to the current service.
-    return if product.image.blob.service_name.to_s == current_service
+    return if demo_image_present?(product)
 
+    # The blob record exists but its file is missing/unreadable on the current
+    # store (e.g. seeded against an earlier storage config). Drop it and
+    # re-upload so the original is actually there for variant processing.
     product.image.purge
   end
 
@@ -26,6 +25,14 @@ def attach_demo_image(product, index)
   product.image.attach(io: File.open(path), filename: File.basename(path), content_type: "image/jpeg")
 rescue => e
   warn "Skipped image for #{product.name}: #{e.message}"
+end
+
+# True only if the attached original actually exists on the current service.
+def demo_image_present?(product)
+  blob = product.image.blob
+  blob.service_name.to_s == ActiveStorage::Blob.service.name.to_s && blob.service.exist?(blob.key)
+rescue StandardError
+  false
 end
 
 def seed_store(name:, owner_email:, staff_email: nil, products:)
