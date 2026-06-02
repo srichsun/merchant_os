@@ -37,6 +37,13 @@ RSpec.describe "Storefront", type: :request do
       expect(response.body).to match(%r{<img[^>]+rails/active_storage})
     end
 
+    it "shows a confirmation notice after returning from Stripe" do
+      get storefront_store_path(store, checkout: "success")
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Payment received")
+    end
+
     it "filters by the search query" do
       create(:product, tenant: store, name: "Ceramic Mug", stock: 5)
       create(:product, tenant: store, name: "Wooden Spoon", stock: 5)

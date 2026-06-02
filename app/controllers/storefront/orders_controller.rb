@@ -21,7 +21,7 @@ module Storefront
       else
         redirect_to StripeCheckout.session_url(
           order: order,
-          success_url: storefront_store_url(@store),
+          success_url: storefront_store_url(@store, checkout: "success"),
           cancel_url: storefront_store_checkout_url(@store, product.id)
         ), allow_other_host: true
       end
