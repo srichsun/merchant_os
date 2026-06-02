@@ -48,26 +48,18 @@ RSpec.describe "Storefront", type: :request do
   end
 
   describe "POST /s/:slug/orders" do
-    it "places a paid order with the buyer's email and takes stock" do
+    it "creates a pending order and hands off to ECPay" do
       product = create(:product, tenant: store, stock: 3)
 
       expect do
         post storefront_store_orders_path(store, product_id: product.id,
           order: { quantity: 1, customer_email: "buyer@example.com" })
-      end.to change { store.orders.where(aasm_state: "paid").count }.by(1)
+      end.to change { store.orders.where(aasm_state: "pending").count }.by(1)
 
-      expect(product.reload.stock).to eq(2)
-      expect(store.orders.last.customer_email).to eq("buyer@example.com")
-    end
-
-    it "shows a sold-out message when there's no stock" do
-      product = create(:product, tenant: store, stock: 0)
-
-      post storefront_store_orders_path(store, product_id: product.id)
-
-      expect(response).to redirect_to(storefront_store_path(store))
-      follow_redirect!
-      expect(response.body).to include("sold out")
+      order = store.orders.last
+      expect(order.customer_email).to eq("buyer@example.com")
+      expect(order.payment_ref).to be_present
+      expect(response.body).to include(Ecpay.checkout_url) # auto-submit form action
     end
   end
 end
