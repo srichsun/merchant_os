@@ -13,15 +13,14 @@ def attach_demo_image(product, filename)
   path = Rails.root.join("db/seeds/images", filename)
   return unless File.exist?(path)
 
-  if product.image.attached?
-    # Keep it only if it's the expected photo and actually readable; otherwise
-    # re-upload (covers an earlier storage config or a swapped-in image).
-    return if product.image.blob.filename.to_s == filename && demo_image_present?(product)
-
-    product.image.purge
+  unless product.image.attached? && product.image.blob.filename.to_s == filename && demo_image_present?(product)
+    product.image.purge if product.image.attached?
+    product.image.attach(io: File.open(path), filename: filename, content_type: "image/jpeg")
   end
 
-  product.image.attach(io: File.open(path), filename: filename, content_type: "image/jpeg")
+  # Pre-generate the :card thumbnail now so the storefront serves a ready-made
+  # variant instead of processing it on the first request (visible lag otherwise).
+  product.image.variant(:card).processed
 rescue => e
   warn "Skipped image for #{product.name}: #{e.message}"
 end
