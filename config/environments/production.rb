@@ -21,9 +21,17 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
-  # Store uploaded files on Tigris (S3-compatible). Override with
-  # ACTIVE_STORAGE_SERVICE=local to fall back to the (ephemeral) local disk.
-  config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "tigris").to_sym
+  # Use Tigris (S3-compatible) only when its env vars are actually set; otherwise
+  # fall back to the local disk so a missing/incomplete object-store config can
+  # never break the deploy. Set ACTIVE_STORAGE_SERVICE to force a service.
+  config.active_storage.service =
+    if ENV["ACTIVE_STORAGE_SERVICE"].present?
+      ENV["ACTIVE_STORAGE_SERVICE"].to_sym
+    elsif ENV["BUCKET_NAME"].present? && ENV["AWS_ACCESS_KEY_ID"].present?
+      :tigris
+    else
+      :local
+    end
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   # config.assume_ssl = true
