@@ -110,3 +110,6 @@ gem "rack-attack"
 
 # Payments — Stripe (hosted Checkout + verified webhook)
 gem "stripe"
+
+# Email via Resend's HTTP API (outbound SMTP is blocked on the host)
+gem "resend"

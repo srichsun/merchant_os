@@ -76,28 +76,33 @@ Rails.application.configure do
   # Switch to :sidekiq once a Redis instance and a worker process are available.
   config.active_job.queue_adapter = :async
 
-  # Email via SMTP. Set the SMTP_* env vars (SendGrid / Resend / Brevo ...) to
-  # turn delivery on; until then deliveries are skipped (no crash).
-  config.action_mailer.perform_deliveries = ENV["SMTP_ADDRESS"].present?
   # Surface delivery errors (caught + logged by NotifyStoreJob as "[MAIL] failed")
   # instead of failing silently. Mail runs in background jobs, so this never
   # affects a web request.
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = :smtp
   config.action_mailer.default_url_options = {
     host: ENV.fetch("APP_HOST", "merchant-os.onrender.com"), protocol: "https"
   }
-  smtp_port = ENV.fetch("SMTP_PORT", "587").to_i
-  config.action_mailer.smtp_settings = {
-    address: ENV["SMTP_ADDRESS"],
-    port: smtp_port,
-    user_name: ENV["SMTP_USERNAME"],
-    password: ENV["SMTP_PASSWORD"],
-    authentication: :plain,
-    # Port 465 uses implicit TLS; 587 uses STARTTLS.
-    tls: smtp_port == 465,
-    enable_starttls_auto: smtp_port != 465
-  }
+
+  # Prefer Resend's HTTP API (port 443) — outbound SMTP is blocked on this host,
+  # so SMTP times out. Fall back to SMTP only when RESEND_API_KEY isn't set.
+  if ENV["RESEND_API_KEY"].present?
+    config.action_mailer.delivery_method = :resend
+    config.action_mailer.perform_deliveries = true
+  else
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.perform_deliveries = ENV["SMTP_ADDRESS"].present?
+    smtp_port = ENV.fetch("SMTP_PORT", "587").to_i
+    config.action_mailer.smtp_settings = {
+      address: ENV["SMTP_ADDRESS"],
+      port: smtp_port,
+      user_name: ENV["SMTP_USERNAME"],
+      password: ENV["SMTP_PASSWORD"],
+      authentication: :plain,
+      tls: smtp_port == 465,
+      enable_starttls_auto: smtp_port != 465
+    }
+  end
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
