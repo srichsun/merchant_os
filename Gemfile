@@ -57,6 +57,9 @@ gem "sentry-rails"    # Sentry's Rails integration
 gem "lograge"         # Condense request logs into single-line JSON
 
 group :development, :test do
+  # Catch N+1 queries (logs in development, raises in test)
+  gem "bullet"
+
   # Testing
   gem "rspec-rails"
   gem "factory_bot_rails"
@@ -83,9 +86,6 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
-
-  # Detect N+1 queries (8.1.x supports Rails 8.1)
-  gem "bullet"
 
   # Preview outgoing emails in the browser during development
   gem "letter_opener_web"

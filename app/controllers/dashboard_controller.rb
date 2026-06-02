@@ -3,6 +3,6 @@
 class DashboardController < ApplicationController
   def show
     @tenant = current_user.tenant
-    @orders = @tenant.orders.where(aasm_state: %w[paid shipped]).order(created_at: :desc).limit(10)
+    @orders = @tenant.orders.where(aasm_state: %w[paid shipped]).includes(:product).order(created_at: :desc).limit(10)
   end
 end

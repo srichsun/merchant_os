@@ -78,4 +78,12 @@ Rails.application.configure do
 
   # Run jobs in-process locally so there's no need to run Redis/Sidekiq in dev
   config.active_job.queue_adapter = :async
+
+  # Surface N+1 queries while developing
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.bullet_logger = true
+    Bullet.rails_logger = true
+    Bullet.add_footer = true
+  end
 end

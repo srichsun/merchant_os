@@ -3,7 +3,7 @@ class OrdersController < ApplicationController
   after_action :verify_policy_scoped, only: :index
 
   def index
-    @pagy, @orders = pagy(policy_scope(Order).order(created_at: :desc), limit: 10)
+    @pagy, @orders = pagy(policy_scope(Order).includes(:product).order(created_at: :desc), limit: 10)
   end
 
   def ship

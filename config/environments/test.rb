@@ -53,4 +53,11 @@ Rails.application.configure do
 
   # Collect enqueued jobs so specs can assert on them with have_enqueued_job
   config.active_job.queue_adapter = :test
+
+  # Fail the suite if a request introduces an N+1 query
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.bullet_logger = true
+    Bullet.raise = true
+  end
 end

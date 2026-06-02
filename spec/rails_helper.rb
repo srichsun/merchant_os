@@ -69,6 +69,15 @@ RSpec.configure do |config|
   # Don't leak the current tenant between examples
   config.before(:each) { ActsAsTenant.current_tenant = nil }
 
+  # Run Bullet around request specs so an N+1 fails the test
+  if defined?(Bullet) && Bullet.enable?
+    config.before(:each, type: :request) { Bullet.start_request }
+    config.after(:each, type: :request) do
+      Bullet.perform_out_of_channel_notifications if Bullet.notification?
+      Bullet.end_request
+    end
+  end
+
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 

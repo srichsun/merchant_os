@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_02_014559) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_02_061318) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -25,7 +25,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_02_014559) do
     t.bigint "tenant_id", null: false
     t.integer "total_cents", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["payment_ref"], name: "index_orders_on_payment_ref"
     t.index ["product_id"], name: "index_orders_on_product_id"
+    t.index ["tenant_id", "created_at"], name: "index_orders_on_tenant_id_and_created_at"
     t.index ["tenant_id"], name: "index_orders_on_tenant_id"
   end
 
@@ -36,6 +38,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_02_014559) do
     t.integer "stock", default: 0, null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_products_on_name_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["tenant_id"], name: "index_products_on_tenant_id"
   end
 
