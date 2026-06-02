@@ -59,5 +59,11 @@ Rails.application.configure do
     Bullet.enable = true
     Bullet.bullet_logger = true
     Bullet.raise = true
+
+    # Keep N+1 detection (the thing we care about), but turn off the
+    # unused-eager-loading detector: Active Storage's deep blob/variant preloads
+    # trip it as false positives (they pay off with many records, not the one
+    # or two in a test).
+    Bullet.unused_eager_loading_enable = false
   end
 end

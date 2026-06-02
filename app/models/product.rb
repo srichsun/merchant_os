@@ -7,6 +7,12 @@ class Product < ApplicationRecord
   # Scopes every query to the current store; also adds belongs_to :tenant
   acts_as_tenant :tenant
 
+  # Product photo. The :card variant is a thumbnail used on listing pages;
+  # variants are generated lazily and stored, so they're computed once.
+  has_one_attached :image do |attachable|
+    attachable.variant :card, resize_to_limit: [ 600, 600 ]
+  end
+
   # Trigram search handles partial matches and Chinese substrings without ES
   pg_search_scope :search_by_name,
                   against: :name,

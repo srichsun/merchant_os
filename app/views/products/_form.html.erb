@@ -24,6 +24,14 @@
     <%= f.number_field :stock, class: "field-input" %>
   </div>
 
+  <div class="mb-6">
+    <%= f.label :image, "Product photo", class: "field-label" %>
+    <% if product.image.attached? %>
+      <%= image_tag product.image.variant(:card), class: "mb-2 h-24 w-24 rounded object-cover" %>
+    <% end %>
+    <%= f.file_field :image, accept: "image/*", class: "field-input" %>
+  </div>
+
   <div class="flex items-center gap-4">
     <%= f.submit "Save", class: "btn" %>
     <%= link_to "Cancel", products_path, class: "link-soft text-sm" %>

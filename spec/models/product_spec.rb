@@ -26,6 +26,26 @@ RSpec.describe Product, type: :model do
     end
   end
 
+  describe "#image" do
+    let(:file) { Rails.root.join("spec/fixtures/files/sample_product.jpg") }
+
+    def attach!(product)
+      product.image.attach(io: File.open(file), filename: "sample_product.jpg", content_type: "image/jpeg")
+    end
+
+    it "can attach a photo" do
+      product = create(:product)
+      attach!(product)
+      expect(product.image).to be_attached
+    end
+
+    it "exposes a :card thumbnail variant" do
+      product = create(:product)
+      attach!(product)
+      expect { product.image.variant(:card) }.not_to raise_error
+    end
+  end
+
   describe "#sell!" do
     it "reduces stock" do
       product = create(:product, stock: 5)

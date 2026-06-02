@@ -6,8 +6,9 @@ class ProductsController < ApplicationController
   after_action :verify_policy_scoped, only: :index
 
   def index
-    # acts_as_tenant already limits this to the current store
-    scope = policy_scope(Product)
+    # acts_as_tenant already limits this to the current store;
+    # with_attached_image preloads the photo to avoid an N+1 in the list
+    scope = policy_scope(Product).with_attached_image
     @products =
       if params[:q].present?
         scope.search_by_name(params[:q]) # ordered by match rank
@@ -57,6 +58,6 @@ class ProductsController < ApplicationController
   end
 
   def product_params
-    params.require(:product).permit(:name, :price_cents, :stock)
+    params.require(:product).permit(:name, :price_cents, :stock, :image)
   end
 end

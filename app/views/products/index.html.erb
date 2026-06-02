@@ -12,6 +12,7 @@
     <table class="w-full text-sm">
       <thead class="border-b border-[#1e1e1e] text-left muted">
         <tr>
+          <th class="py-3 font-medium"></th>
           <th class="py-3 font-medium">Name</th>
           <th class="py-3 font-medium">Price</th>
           <th class="py-3 font-medium">Stock</th>
@@ -21,6 +22,13 @@
       <tbody>
         <% @products.each do |product| %>
           <tr class="border-b border-[#161616] last:border-0">
+            <td class="py-3">
+              <% if product.image.attached? %>
+                <%= image_tag product.image.variant(:card), class: "h-10 w-10 rounded object-cover" %>
+              <% else %>
+                <div class="flex h-10 w-10 items-center justify-center rounded bg-[#0c0c0c] text-xs muted"><%= product.name.first %></div>
+              <% end %>
+            </td>
             <td class="py-3 font-medium"><%= product.name %></td>
             <td class="py-3 gold"><%= number_to_currency(product.price) %></td>
             <td class="py-3"><%= product.stock %></td>
