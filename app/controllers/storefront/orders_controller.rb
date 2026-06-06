@@ -35,7 +35,7 @@ module Storefront
       @fields = Ecpay.checkout_params(
         order: order,
         return_url: payments_ecpay_callback_url,
-        client_back_url: storefront_store_url(@store)
+        client_back_url: storefront_store_url(@store, checkout: "success")
       )
       render :pay
     end
