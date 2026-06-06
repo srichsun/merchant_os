@@ -17,7 +17,7 @@
         <div class="product-card panel flex flex-col" data-reveal>
           <div class="flex h-40 items-center justify-center overflow-hidden bg-[#0c0c0c]">
             <% if product.image.attached? %>
-              <%= image_tag product.image.variant(:card), class: "h-full w-full object-cover", loading: "lazy", alt: product.name %>
+              <%= image_tag product.image.variant(:card), class: "h-full w-full object-cover", loading: "lazy", decoding: "async", fetchpriority: "low", alt: product.name %>
             <% else %>
               <span class="display text-5xl font-bold muted"><%= product.name.first %></span>
             <% end %>

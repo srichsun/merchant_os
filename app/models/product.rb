@@ -9,8 +9,10 @@ class Product < ApplicationRecord
 
   # Product photo. The :card variant is a thumbnail used on listing pages;
   # variants are generated lazily and stored, so they're computed once.
+  # Storefront thumbnail: small WebP so the grid loads fast. Pre-generated in the
+  # seed so requests are a quick redirect, not an on-the-fly conversion.
   has_one_attached :image do |attachable|
-    attachable.variant :card, resize_to_limit: [ 600, 600 ]
+    attachable.variant :card, resize_to_limit: [ 480, 480 ], format: :webp, saver: { quality: 72 }
   end
 
   # Trigram search handles partial matches and Chinese substrings without ES
