@@ -11,13 +11,16 @@ common: &defaults
   key: <%= ENV["SCOUT_KEY"] %>
   monitor: <%= ENV.fetch("SCOUT_MONITOR", "false") %>
   errors_enabled: true
-  logs_monitor: <%= ENV.fetch("SCOUT_LOGS_MONITOR", "false") %>
+  # Only forward logs when an ingest key is actually present. During the Docker
+  # build (assets:precompile boots the app) the runtime env vars aren't set, so the
+  # key is blank — keep logs off there, or scout_apm_logging's OpenTelemetry setup
+  # raises on the empty attribute and fails the build.
+  logs_monitor: <%= ENV["SCOUT_LOG_INGEST_KEY"].to_s.strip.empty? ? false : ENV.fetch("SCOUT_LOGS_MONITOR", "true") %>
   logs_ingest_key: <%= ENV["SCOUT_LOG_INGEST_KEY"] %>
 
 production:
   <<: *defaults
   monitor: <%= ENV.fetch("SCOUT_MONITOR", "true") %>
-  logs_monitor: <%= ENV.fetch("SCOUT_LOGS_MONITOR", "true") %>
 
 development:
   <<: *defaults
