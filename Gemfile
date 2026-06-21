@@ -97,6 +97,9 @@ group :development do
 
   # Preview outgoing emails in the browser during development
   gem "letter_opener_web"
+
+  # Pretty-print objects in the console/logs with color and indentation (`ap obj`)
+  gem "amazing_print"
 end
 
 group :test do

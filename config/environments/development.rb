@@ -46,6 +46,11 @@ Rails.application.configure do
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
 
+  # Colorize log output in the terminal (SELECTs, params, etc. get colors).
+  # Note: colors show only in the terminal running `rails server` — never in the
+  # development.log file or via grep/tail, which store plain text.
+  config.colorize_logging = true
+
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
 
