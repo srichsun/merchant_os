@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   # Public storefront (no login; tenant comes from the URL slug)
   scope path: "s", module: "storefront", as: "storefront" do
     get ":store_slug", to: "stores#show", as: :store
+    get ":store_slug/p/:product_id", to: "products#show", as: :store_product
     get ":store_slug/checkout/:product_id", to: "orders#new", as: :store_checkout
     post ":store_slug/orders", to: "orders#create", as: :store_orders
     post ":store_slug/chat", to: "chat#create", as: :store_chat
