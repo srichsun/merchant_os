@@ -41,4 +41,42 @@ class Product < ApplicationRecord
   def price
     price_cents / 100.0
   end
+
+  # --- Flash-sale helpers (price_cents is the limited sale price) ---
+
+  def upcoming?
+    sale_starts_at.present? && sale_starts_at.future?
+  end
+
+  def ended?
+    sale_ends_at.present? && sale_ends_at.past?
+  end
+
+  def sold_out?
+    stock.zero?
+  end
+
+  def on_sale?
+    !upcoming? && !ended? && !sold_out?
+  end
+
+  # One symbol for the UI to branch on.
+  def sale_status
+    return :upcoming if upcoming?
+    return :ended if ended?
+    return :sold_out if sold_out?
+
+    :on_sale
+  end
+
+  def original_price
+    original_price_cents ? original_price_cents / 100.0 : nil
+  end
+
+  # Percent off vs the original price; nil when there's no markdown.
+  def discount_percent
+    return nil if original_price_cents.blank? || original_price_cents <= price_cents
+
+    (100 - (price_cents * 100.0 / original_price_cents)).round
+  end
 end

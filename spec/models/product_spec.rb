@@ -82,4 +82,33 @@ RSpec.describe Product, type: :model do
       expect([ results.pop, results.pop ].sort).to eq(%i[sold sold_out])
     end
   end
+
+  describe "flash-sale helpers" do
+    it "is on sale when started, not ended, and in stock" do
+      product = build(:product, stock: 5, sale_starts_at: 1.hour.ago, sale_ends_at: 1.hour.from_now)
+      expect(product.sale_status).to eq(:on_sale)
+      expect(product).to be_on_sale
+    end
+
+    it "is upcoming before the start time" do
+      expect(build(:product, sale_starts_at: 1.hour.from_now).sale_status).to eq(:upcoming)
+    end
+
+    it "is ended after the end time" do
+      expect(build(:product, sale_ends_at: 1.hour.ago).sale_status).to eq(:ended)
+    end
+
+    it "is sold out at zero stock during the sale" do
+      product = build(:product, stock: 0, sale_starts_at: 1.hour.ago, sale_ends_at: 1.hour.from_now)
+      expect(product.sale_status).to eq(:sold_out)
+    end
+
+    it "computes the discount percent against the original price" do
+      expect(build(:product, price_cents: 750, original_price_cents: 1_000).discount_percent).to eq(25)
+    end
+
+    it "has no discount without an original price" do
+      expect(build(:product, price_cents: 1_000, original_price_cents: nil).discount_percent).to be_nil
+    end
+  end
 end
