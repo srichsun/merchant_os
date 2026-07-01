@@ -1,19 +1,25 @@
-<div class="flex items-center gap-3">
-  <%= image_tag store_avatar(store), class: "h-12 w-12 rounded-full object-cover", alt: store.name, loading: "lazy" %>
-  <div>
-    <div class="flex items-center gap-1">
-      <span class="display text-lg font-bold tracking-tight"><%= store.name %></span>
-      <% if store.verified %>
-        <svg viewBox="0 0 24 24" class="h-4 w-4" role="img" aria-label="Verified">
-          <circle cx="12" cy="12" r="12" fill="#3897f0" />
-          <path d="M10.2 15.4 6.6 11.8l1.3-1.3 2.3 2.3 5.1-5.1 1.3 1.3z" fill="#fff" />
-        </svg>
+<% inner = capture do %>
+  <div class="group flex items-center gap-3">
+    <%= image_tag store_avatar(store), class: "h-12 w-12 rounded-full object-cover", alt: store.name, loading: "lazy" %>
+    <div>
+      <div class="flex items-center gap-1">
+        <span class="display text-lg font-bold tracking-tight transition group-hover:text-[#c9a84c]"><%= store.name %></span>
+        <% if store.verified %>
+          <svg viewBox="0 0 24 24" class="h-4 w-4" role="img" aria-label="Verified">
+            <circle cx="12" cy="12" r="12" fill="#3897f0" />
+            <path d="M10.2 15.4 6.6 11.8l1.3-1.3 2.3 2.3 5.1-5.1 1.3 1.3z" fill="#fff" />
+          </svg>
+        <% end %>
+      </div>
+      <% if store.instagram_handle %>
+        <span class="text-sm muted">@<%= store.instagram_handle %></span>
       <% end %>
     </div>
-    <% if store.instagram_handle %>
-      <%= link_to "@#{store.instagram_handle}", store.instagram_url,
-            target: "_blank", rel: "noopener noreferrer",
-            class: "text-sm muted transition hover:text-[#c9a84c]" %>
-    <% end %>
   </div>
-</div>
+<% end %>
+
+<% if store.instagram_url %>
+  <%= link_to inner, store.instagram_url, target: "_blank", rel: "noopener noreferrer", class: "inline-block" %>
+<% else %>
+  <%= inner %>
+<% end %>
