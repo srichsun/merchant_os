@@ -82,6 +82,21 @@ RSpec.describe "Storefront", type: :request do
       expect(response).to redirect_to("https://checkout.stripe.test/s/abc")
     end
 
+    it "saves the customer's name, phone and shipping address" do
+      product = create(:product, tenant: store, stock: 3)
+      allow(StripeCheckout).to receive(:session_url).and_return("https://checkout.stripe.test/s/abc")
+
+      post storefront_store_orders_path(store, product_id: product.id,
+        order: { quantity: 1, customer_email: "buyer@example.com",
+                 customer_name: "Dane Wu", phone: "0912345678",
+                 shipping_address: "1 Main St, Taipei" })
+
+      order = store.orders.last
+      expect(order.customer_name).to eq("Dane Wu")
+      expect(order.phone).to eq("0912345678")
+      expect(order.shipping_address).to eq("1 Main St, Taipei")
+    end
+
     it "hands off to ECPay when chosen" do
       product = create(:product, tenant: store, stock: 3)
 

@@ -9,8 +9,23 @@
     <%= hidden_field_tag :product_id, @product.id %>
 
     <div class="mb-4">
+      <%= label_tag "order[customer_name]", "Full name", class: "field-label" %>
+      <%= text_field_tag "order[customer_name]", nil, required: true, autocomplete: "name", class: "field-input" %>
+    </div>
+
+    <div class="mb-4">
       <%= label_tag "order[customer_email]", "Email", class: "field-label" %>
-      <%= email_field_tag "order[customer_email]", nil, required: true, class: "field-input" %>
+      <%= email_field_tag "order[customer_email]", nil, required: true, autocomplete: "email", class: "field-input" %>
+    </div>
+
+    <div class="mb-4">
+      <%= label_tag "order[phone]", "Phone", class: "field-label" %>
+      <%= telephone_field_tag "order[phone]", nil, required: true, autocomplete: "tel", class: "field-input" %>
+    </div>
+
+    <div class="mb-4">
+      <%= label_tag "order[shipping_address]", "Shipping address", class: "field-label" %>
+      <%= text_area_tag "order[shipping_address]", nil, required: true, rows: 2, autocomplete: "street-address", class: "field-input" %>
     </div>
 
     <div class="mb-6">

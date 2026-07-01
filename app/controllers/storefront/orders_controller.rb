@@ -13,6 +13,9 @@ module Storefront
         product: product,
         quantity: order_params[:quantity].presence || 1,
         customer_email: order_params[:customer_email],
+        customer_name: order_params[:customer_name],
+        phone: order_params[:phone],
+        shipping_address: order_params[:shipping_address],
         payment_ref: generate_payment_ref
       )
 
@@ -41,7 +44,8 @@ module Storefront
     end
 
     def order_params
-      params.fetch(:order, {}).permit(:quantity, :customer_email)
+      params.fetch(:order, {})
+            .permit(:quantity, :customer_email, :customer_name, :phone, :shipping_address)
     end
 
     # ECPay's MerchantTradeNo: <= 20 alphanumeric chars, unique per order
