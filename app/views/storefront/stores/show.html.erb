@@ -1,39 +1,46 @@
 <div class="mb-10" data-reveal>
-  <span class="kicker">The Store</span>
-  <h1 class="display mt-3 text-4xl font-bold tracking-tight">Featured products</h1>
+  <span class="kicker">The Drop Shop</span>
+  <h1 class="display mt-3 text-4xl font-bold tracking-tight"><%= @store.name %></h1>
+  <p class="mt-2 muted">Limited drops. When the timer's up or the stock's gone, it's gone.</p>
 
   <%= form_with url: storefront_store_path(@store), method: :get, class: "mt-6 max-w-md" do %>
-    <%= text_field_tag :q, params[:q], placeholder: "Search products…", class: "field-input" %>
+    <%= text_field_tag :q, params[:q], placeholder: "Search drops…", class: "field-input" %>
   <% end %>
 </div>
 
 <% if @products.any? %>
   <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
     <% @products.each do |product| %>
-      <%# Russian-doll fragment cache: keyed on product.updated_at, so the card
-          HTML (and resolved image URL) is rendered once and reused until the
-          product changes. %>
+      <%# Russian-doll fragment cache: card HTML is rendered once and reused
+          until the product changes. %>
       <% cache product do %>
-        <div class="product-card panel flex flex-col" data-reveal>
-          <div class="flex h-40 items-center justify-center overflow-hidden bg-[#0c0c0c]">
+        <%= link_to storefront_store_product_path(@store, product.id),
+              class: "product-card panel flex flex-col transition hover:border-[#c9a84c]/40", data: { reveal: "" } do %>
+          <div class="relative flex h-44 items-center justify-center overflow-hidden bg-[#0c0c0c]">
             <% if product.image.attached? %>
-              <%= image_tag product.image.variant(:card), class: "h-full w-full object-cover", loading: "lazy", decoding: "async", fetchpriority: "low", alt: product.name %>
+              <%= image_tag product.image.variant(:card), class: "h-full w-full object-cover", loading: "lazy", alt: product.name %>
             <% else %>
-              <span class="display text-5xl font-bold muted"><%= product.name.first %></span>
+              <%= image_tag "https://picsum.photos/seed/product#{product.id}/600/400", class: "h-full w-full object-cover", loading: "lazy", alt: product.name %>
+            <% end %>
+            <% if product.discount_percent %>
+              <span class="absolute left-2 top-2 rounded bg-[#2a1414] px-2 py-1 text-xs font-medium text-red-300"><%= product.discount_percent %>% off</span>
             <% end %>
           </div>
           <div class="flex flex-1 flex-col p-5">
             <h2 class="font-medium"><%= product.name %></h2>
-            <p class="display mt-1 text-2xl font-bold gold"><%= number_to_currency(product.price) %></p>
-            <p class="mt-1 text-xs muted"><%= product.stock %> in stock</p>
-            <%= link_to "Buy", storefront_store_checkout_path(@store, product.id), class: "btn mt-4 w-full text-center" %>
+            <div class="mt-1 flex items-baseline gap-2">
+              <span class="display text-2xl font-bold gold"><%= number_to_currency(product.price) %></span>
+              <% if product.original_price %>
+                <span class="text-sm muted line-through"><%= number_to_currency(product.original_price) %></span>
+              <% end %>
+            </div>
+            <p class="mt-1 text-xs muted"><%= product.stock %> left</p>
+            <span class="btn mt-4 w-full text-center">View drop</span>
           </div>
-        </div>
+        <% end %>
       <% end %>
     <% end %>
   </div>
 <% else %>
-  <div class="panel py-20 text-center muted">No products available right now.</div>
+  <div class="panel py-20 text-center muted">No drops available right now.</div>
 <% end %>
-
-<%= render "storefront/chat/chat" %>
