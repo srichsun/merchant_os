@@ -1,63 +1,79 @@
-<div class="mx-auto max-w-3xl" data-reveal>
+<div class="mx-auto max-w-5xl" data-reveal>
   <%= link_to "← #{@store.name}", storefront_store_path(@store), class: "mono text-xs tracking-widest muted" %>
 
-  <div class="mt-6 grid gap-8 md:grid-cols-2">
-    <%# Product image %>
-    <div class="panel flex aspect-square items-center justify-center overflow-hidden bg-[#0c0c0c]">
-      <% if @product.image.attached? %>
-        <%= image_tag @product.image.variant(:card), class: "h-full w-full object-cover", alt: @product.name %>
-      <% else %>
-        <span class="display text-7xl font-bold muted"><%= @product.name.first %></span>
-      <% end %>
-    </div>
-
-    <%# Details %>
-    <div>
-      <% case @product.sale_status %>
-      <% when :on_sale %>
-        <span class="kicker text-[#c9a84c]">🔥 熱賣中</span>
-      <% when :upcoming %>
-        <span class="kicker muted">即將開賣</span>
-      <% when :sold_out %>
-        <span class="kicker text-red-400">已售完</span>
-      <% when :ended %>
-        <span class="kicker muted">活動已結束</span>
-      <% end %>
-
-      <h1 class="display mt-3 text-3xl font-bold tracking-tight"><%= @product.name %></h1>
-
-      <%# Limited price vs original price %>
-      <div class="mt-4 flex flex-wrap items-baseline gap-3">
-        <span class="display text-3xl font-bold gold"><%= number_to_currency(@product.price) %></span>
-        <% if @product.original_price %>
-          <span class="text-lg muted line-through"><%= number_to_currency(@product.original_price) %></span>
-        <% end %>
-        <% if @product.discount_percent %>
-          <span class="rounded bg-[#2a1414] px-2 py-1 text-xs font-medium text-red-300">省 <%= @product.discount_percent %>%</span>
-        <% end %>
-      </div>
-
-      <%# Scarcity + countdown (deadline shown static now; ticks live after the JS step) %>
-      <div class="mt-4 space-y-1 text-sm">
-        <p class="muted">剩 <span class="gold font-medium"><%= @product.stock %></span> 件</p>
-        <% if @product.upcoming? %>
-          <p class="muted">開賣倒數：<%= @product.sale_starts_at.strftime("%m/%d %H:%M") %></p>
-        <% elsif @product.on_sale? && @product.sale_ends_at %>
-          <p class="muted">結束倒數：<%= @product.sale_ends_at.strftime("%m/%d %H:%M") %></p>
-        <% end %>
-      </div>
-
-      <%# Buy action — only live while on sale %>
-      <div class="mt-8">
-        <% if @product.on_sale? %>
-          <%= link_to "立即搶購", storefront_store_checkout_path(@store, @product.id),
-                      class: "btn block w-full text-center text-lg" %>
+  <div class="mt-6 grid gap-8 lg:grid-cols-5">
+    <%# Media — big hero, Kickstarter-style %>
+    <div class="lg:col-span-3">
+      <div class="panel aspect-[3/2] overflow-hidden bg-[#0c0c0c]">
+        <% if @product.image.attached? %>
+          <%= image_tag @product.image.variant(:card), class: "h-full w-full object-cover", alt: @product.name %>
         <% else %>
-          <span class="btn pointer-events-none block w-full cursor-not-allowed text-center opacity-40">
-            <%= { sold_out: "已售完", upcoming: "尚未開賣", ended: "活動已結束" }[@product.sale_status] %>
-          </span>
+          <%= image_tag "https://picsum.photos/seed/product#{@product.id}/1000/700", class: "h-full w-full object-cover", loading: "lazy", alt: @product.name %>
         <% end %>
       </div>
+
+      <div class="mt-8">
+        <span class="kicker">About this drop</span>
+        <p class="mt-3 leading-relaxed muted">
+          A limited-run drop from <%= @store.name %>. Once the timer hits zero or the
+          stock sells out, it's gone for good. Got a question about sizing, shipping,
+          or your order? Ask the assistant in the corner — it knows this store's
+          live stock, orders, and return policy.
+        </p>
+      </div>
     </div>
+
+    <%# Sidebar — price / stock / countdown / buy %>
+    <aside class="lg:col-span-2">
+      <div class="panel p-6 lg:sticky lg:top-6">
+        <% if @product.sale_status == :on_sale %>
+          <span class="kicker text-[#c9a84c]">🔥 On sale now</span>
+        <% elsif @product.sale_status == :upcoming %>
+          <span class="kicker muted">Coming soon</span>
+        <% elsif @product.sale_status == :sold_out %>
+          <span class="kicker text-red-400">Sold out</span>
+        <% else %>
+          <span class="kicker muted">Sale ended</span>
+        <% end %>
+
+        <h1 class="display mt-3 text-2xl font-bold tracking-tight"><%= @product.name %></h1>
+
+        <div class="mt-5 flex flex-wrap items-baseline gap-3">
+          <span class="display text-3xl font-bold gold"><%= number_to_currency(@product.price) %></span>
+          <% if @product.original_price %>
+            <span class="text-lg muted line-through"><%= number_to_currency(@product.original_price) %></span>
+          <% end %>
+          <% if @product.discount_percent %>
+            <span class="rounded bg-[#2a1414] px-2 py-1 text-xs font-medium text-red-300"><%= @product.discount_percent %>% off</span>
+          <% end %>
+        </div>
+
+        <div class="mt-4 space-y-1 text-sm">
+          <p class="muted"><span class="gold font-medium"><%= @product.stock %></span> left</p>
+          <% if @product.upcoming? %>
+            <p class="muted" data-controller="countdown" data-countdown-deadline-value="<%= @product.sale_starts_at.iso8601 %>">
+              Starts in <span class="gold font-medium" data-countdown-target="display"><%= @product.sale_starts_at.strftime("%b %d, %H:%M") %></span>
+            </p>
+          <% elsif @product.on_sale? && @product.sale_ends_at %>
+            <p class="muted" data-controller="countdown" data-countdown-deadline-value="<%= @product.sale_ends_at.iso8601 %>">
+              Ends in <span class="gold font-medium" data-countdown-target="display"><%= @product.sale_ends_at.strftime("%b %d, %H:%M") %></span>
+            </p>
+          <% end %>
+        </div>
+
+        <div class="mt-6">
+          <% if @product.on_sale? %>
+            <%= link_to "Buy now", storefront_store_checkout_path(@store, @product.id),
+                        class: "btn block w-full text-center text-lg" %>
+          <% else %>
+            <span class="btn pointer-events-none block w-full cursor-not-allowed text-center opacity-40">
+              <%= { sold_out: "Sold out", upcoming: "Not yet on sale", ended: "Sale ended" }[@product.sale_status] %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+    </aside>
   </div>
 </div>
+
+<%= render "storefront/chat/chat" %>

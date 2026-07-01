@@ -5,7 +5,7 @@ RSpec.describe "Storefront product drop page", type: :request do
 
   it "renders the drop page with limited price, discount and buy action" do
     product = ActsAsTenant.with_tenant(store) do
-      create(:product, tenant: store, name: "限量帽T",
+      create(:product, tenant: store, name: "Limited Hoodie",
              price_cents: 750, original_price_cents: 1_000, stock: 5,
              sale_starts_at: 1.hour.ago, sale_ends_at: 1.hour.from_now)
     end
@@ -13,7 +13,7 @@ RSpec.describe "Storefront product drop page", type: :request do
     get storefront_store_product_path(store.slug, product.id)
 
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("限量帽T", "立即搶購", "省 25%", "剩")
+    expect(response.body).to include("Limited Hoodie", "Buy now", "25% off", "left")
   end
 
   it "disables buying once the sale has ended" do
@@ -23,7 +23,7 @@ RSpec.describe "Storefront product drop page", type: :request do
 
     get storefront_store_product_path(store.slug, product.id)
 
-    expect(response.body).to include("活動已結束")
-    expect(response.body).not_to include("立即搶購")
+    expect(response.body).to include("Sale ended")
+    expect(response.body).not_to include("Buy now")
   end
 end
