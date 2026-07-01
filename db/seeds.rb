@@ -2,8 +2,8 @@
 # Two separate stores so the multi-tenant isolation is visible after login.
 #
 # Logins (password "password123"):
-#   owner@example.com  / staff@example.com   -> Studio Aria
-#   owner2@example.com                        -> Coffee Lab
+#   owner@example.com  / staff@example.com   -> How to Beast (@howtobeast)
+#   owner2@example.com                        -> Wisdm (@wisdm)
 
 # Attach the product's demo photo (db/seeds/images/<filename>). Wrapped in a
 # rescue so a missing/misconfigured object store never breaks the boot-time seed.
@@ -39,8 +39,11 @@ rescue StandardError
   false
 end
 
-def seed_store(name:, owner_email:, staff_email: nil, products:)
-  store = Tenant.find_or_create_by!(name: name)
+def seed_store(name:, owner_email:, staff_email: nil, products:, instagram_handle: nil, verified: false)
+  store = Tenant.find_or_create_by!(name: name) do |t|
+    t.instagram_handle = instagram_handle
+    t.verified = verified
+  end
 
   User.find_or_create_by!(email: owner_email) do |u|
     u.tenant = store
@@ -74,7 +77,9 @@ end
 # off the original price and a live sale window. No local images — the storefront
 # falls back to free Unsplash product photos.
 demo = seed_store(
-  name: "Studio Aria",
+  name: "How to Beast",
+  instagram_handle: "howtobeast",
+  verified: true,
   owner_email: "owner@example.com",
   staff_email: "staff@example.com",
   products: [
@@ -88,7 +93,9 @@ demo = seed_store(
 )
 
 seed_store(
-  name: "Coffee Lab",
+  name: "Wisdm",
+  instagram_handle: "wisdm",
+  verified: true,
   owner_email: "owner2@example.com",
   products: [
     { name: "Espresso Beans 1kg", price_cents: 60_000, stock: 30, image: "espresso-beans.jpg" },
