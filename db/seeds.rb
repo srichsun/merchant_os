@@ -68,6 +68,7 @@ def seed_store(name:, owner_email:, staff_email: nil, products:, instagram_handl
         p.original_price_cents = attrs[:original_price_cents]
         p.sale_starts_at = attrs[:sale_starts_at]
         p.sale_ends_at = attrs[:sale_ends_at]
+        p.description = attrs[:description]
       end
       attach_demo_image(product, attrs[:image])
     end
@@ -86,12 +87,27 @@ demo = seed_store(
   owner_email: "owner@example.com",
   staff_email: "staff@example.com",
   products: [
-    { name: "Oversized Hoodie",  price_cents: 5_900, original_price_cents: 9_900,  stock: 8,
+    { name: "Oversized Hoodie", price_cents: 5_900, original_price_cents: 9_900, stock: 8,
+      description: "Heavyweight 420gsm cotton with a boxy fit. The drop everyone asked for.",
       sale_starts_at: 1.hour.ago, sale_ends_at: 2.days.from_now },
-    { name: "Canvas Tote Bag",   price_cents: 2_900, original_price_cents: 4_500,  stock: 15,
+    { name: "Canvas Tote Bag", price_cents: 2_900, original_price_cents: 4_500, stock: 15,
+      description: "Everyday carry in thick natural canvas. Fits a 16-inch laptop.",
       sale_starts_at: 1.hour.ago, sale_ends_at: 1.day.from_now },
     { name: "Everyday Sneakers", price_cents: 8_900, original_price_cents: 14_900, stock: 5,
-      sale_starts_at: 1.hour.ago, sale_ends_at: 3.days.from_now }
+      description: "Clean low-tops in full-grain leather. Only a handful left.",
+      sale_starts_at: 1.hour.ago, sale_ends_at: 3.days.from_now },
+    { name: "Ribbed Beanie", price_cents: 1_900, original_price_cents: 2_900, stock: 22,
+      description: "Merino-blend ribbed knit that actually keeps its shape.",
+      sale_starts_at: 1.hour.ago, sale_ends_at: 4.days.from_now },
+    { name: "Crewneck Sweater", price_cents: 6_900, original_price_cents: 9_900, stock: 3,
+      description: "Midweight crewneck for layering. Down to the last three.",
+      sale_starts_at: 1.hour.ago, sale_ends_at: 8.hours.from_now },
+    { name: "Leather Belt", price_cents: 3_900, original_price_cents: 5_900, stock: 0,
+      description: "Full-grain leather with a solid brass buckle. Sold out this round.",
+      sale_starts_at: 1.hour.ago, sale_ends_at: 5.days.from_now },
+    { name: "Denim Jacket", price_cents: 12_900, original_price_cents: 19_900, stock: 10,
+      description: "Washed selvedge denim trucker. Drops soon, set a reminder.",
+      sale_starts_at: 6.hours.from_now, sale_ends_at: 4.days.from_now }
   ]
 )
 
@@ -101,9 +117,24 @@ seed_store(
   verified: true,
   owner_email: "owner2@example.com",
   products: [
-    { name: "Espresso Beans 1kg", price_cents: 60_000, stock: 30, image: "espresso-beans.jpg" },
-    { name: "Pour-over Kettle",   price_cents: 95_000, stock: 8, image: "pour-over-kettle.jpg" },
-    { name: "Milk Frother",       price_cents: 42_000, stock: 18, image: "milk-frother.jpg" }
+    { name: "Espresso Beans 1kg", price_cents: 6_000, original_price_cents: 9_000, stock: 30,
+      description: "Single-origin espresso roast. Notes of chocolate and dried fig.",
+      sale_starts_at: 1.hour.ago, sale_ends_at: 2.days.from_now },
+    { name: "Pour-over Kettle", price_cents: 9_500, original_price_cents: 13_500, stock: 8,
+      description: "Gooseneck kettle for a slow, controlled pour.",
+      sale_starts_at: 1.hour.ago, sale_ends_at: 3.days.from_now },
+    { name: "Milk Frother", price_cents: 4_200, original_price_cents: 6_500, stock: 18,
+      description: "Handheld frother for cafe-grade microfoam at home.",
+      sale_starts_at: 1.hour.ago, sale_ends_at: 1.day.from_now },
+    { name: "Ceramic Mug", price_cents: 1_800, original_price_cents: 2_800, stock: 40,
+      description: "Stoneware mug that holds heat and feels good in the hand.",
+      sale_starts_at: 1.hour.ago, sale_ends_at: 4.days.from_now },
+    { name: "Travel Tumbler", price_cents: 3_200, original_price_cents: 4_800, stock: 12,
+      description: "Vacuum-sealed tumbler. Six hours hot, leak-proof lid.",
+      sale_starts_at: 1.hour.ago, sale_ends_at: 2.days.from_now },
+    { name: "Hand Grinder", price_cents: 5_500, original_price_cents: 8_000, stock: 6,
+      description: "Conical burr hand grinder for a consistent grind anywhere.",
+      sale_starts_at: 1.hour.ago, sale_ends_at: 3.days.from_now }
   ]
 )
 
