@@ -19,4 +19,12 @@ module StorefrontHelper
     photo_id = DEMO_IMAGE_IDS[product.id % DEMO_IMAGE_IDS.size]
     "https://images.unsplash.com/#{photo_id}?w=#{width}&h=#{height}&fit=crop&auto=format"
   end
+
+  # Free demo portrait (randomuser.me) for a store with no uploaded avatar — we
+  # can't pull a real Instagram photo, so this is a stand-in. Picked by store id.
+  DEMO_AVATARS = %w[men/32 women/44 men/75 women/68 men/12 women/21].freeze
+
+  def store_avatar(store)
+    "https://randomuser.me/api/portraits/#{DEMO_AVATARS[store.id % DEMO_AVATARS.size]}.jpg"
+  end
 end

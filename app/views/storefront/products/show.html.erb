@@ -1,7 +1,11 @@
 <div class="mx-auto max-w-5xl" data-reveal>
   <%= link_to "← #{@store.name}", storefront_store_path(@store), class: "mono text-xs tracking-widest muted" %>
 
-  <div class="mt-6 grid gap-8 lg:grid-cols-5">
+  <div class="mt-4">
+    <%= render "storefront/shared/influencer", store: @store %>
+  </div>
+
+  <div class="mt-8 grid gap-8 lg:grid-cols-5">
     <%# Media — big hero, Kickstarter-style %>
     <div class="lg:col-span-3">
       <div class="panel aspect-[3/2] overflow-hidden bg-[#0c0c0c]">

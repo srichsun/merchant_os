@@ -1,7 +1,6 @@
 <div class="mb-10" data-reveal>
-  <span class="kicker">The Drop Shop</span>
-  <h1 class="display mt-3 text-4xl font-bold tracking-tight"><%= @store.name %></h1>
-  <p class="mt-2 muted">Limited drops. When the timer's up or the stock's gone, it's gone.</p>
+  <%= render "storefront/shared/influencer", store: @store %>
+  <p class="mt-4 muted">Limited drops. When the timer's up or the stock's gone, it's gone.</p>
 
   <%= form_with url: storefront_store_path(@store), method: :get, class: "mt-6 max-w-md" do %>
     <%= text_field_tag :q, params[:q], placeholder: "Search drops…", class: "field-input" %>
