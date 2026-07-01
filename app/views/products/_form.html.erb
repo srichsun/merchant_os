@@ -15,13 +15,36 @@
   </div>
 
   <div class="mb-4">
-    <%= f.label :price_cents, "Price (in cents)", class: "field-label" %>
-    <%= f.number_field :price_cents, class: "field-input" %>
+    <%= f.label :description, class: "field-label" %>
+    <%= f.text_area :description, rows: 3, class: "field-input",
+          placeholder: "Short pitch for the drop (shown on the product page)." %>
   </div>
 
-  <div class="mb-6">
+  <div class="mb-4 grid grid-cols-2 gap-4">
+    <div>
+      <%= f.label :price_cents, "Sale price (cents)", class: "field-label" %>
+      <%= f.number_field :price_cents, class: "field-input" %>
+    </div>
+    <div>
+      <%= f.label :original_price_cents, "Original price (cents)", class: "field-label" %>
+      <%= f.number_field :original_price_cents, class: "field-input" %>
+    </div>
+  </div>
+
+  <div class="mb-4">
     <%= f.label :stock, class: "field-label" %>
     <%= f.number_field :stock, class: "field-input" %>
+  </div>
+
+  <div class="mb-4 grid grid-cols-2 gap-4">
+    <div>
+      <%= f.label :sale_starts_at, "Sale starts", class: "field-label" %>
+      <%= f.datetime_local_field :sale_starts_at, class: "field-input" %>
+    </div>
+    <div>
+      <%= f.label :sale_ends_at, "Sale ends", class: "field-label" %>
+      <%= f.datetime_local_field :sale_ends_at, class: "field-input" %>
+    </div>
   </div>
 
   <div class="mb-6">

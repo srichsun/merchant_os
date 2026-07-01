@@ -36,6 +36,22 @@ RSpec.describe "Products", type: :request do
         post products_path, params: { product: { name: "Mug", price_cents: 500, stock: 3 } }
       end.to change(tenant.products, :count).by(1)
     end
+
+    it "saves the flash-sale fields (original price, sale window, description)" do
+      sign_in owner
+
+      post products_path, params: { product: {
+        name: "Hoodie", price_cents: 5_900, original_price_cents: 9_900, stock: 8,
+        description: "Limited winter drop.",
+        sale_starts_at: 1.hour.ago, sale_ends_at: 2.days.from_now
+      } }
+
+      product = tenant.products.find_by(name: "Hoodie")
+      expect(product.original_price_cents).to eq(9_900)
+      expect(product.description).to eq("Limited winter drop.")
+      expect(product.discount_percent).to eq(40)
+      expect(product).to be_on_sale
+    end
   end
 
   describe "DELETE /products/:id" do
