@@ -1,16 +1,16 @@
-<%# Append the customer question and the agent reply to the chat log. %>
+<%# Echo the question and drop a placeholder; the reply arrives over ActionCable. %>
 <%= turbo_stream.append "chat-log" do %>
   <div class="text-right">
     <div class="ml-auto inline-block max-w-[80%] rounded bg-[#1a1a1a] px-3 py-2 text-sm"><%= @message %></div>
   </div>
-  <% if @reply.present? %>
-    <div class="text-left">
-      <div class="inline-block max-w-[80%] whitespace-pre-line rounded border border-[#2a2620] px-3 py-2 text-sm gold"><%= @reply %></div>
+  <% if @message.present? %>
+    <div id="<%= @reply_dom_id %>" class="text-left">
+      <div class="inline-block max-w-[80%] rounded border border-[#2a2620] px-3 py-2 text-sm muted">查詢中…</div>
     </div>
   <% end %>
 <% end %>
 
 <%# Swap the form back in empty, clearing the input. %>
 <%= turbo_stream.replace "chat-form" do %>
-  <%= render "storefront/chat/form" %>
+  <%= render "storefront/chat/form", conversation_id: @conversation_id %>
 <% end %>

@@ -3,12 +3,22 @@ module Storefront
   # already resolved from the URL slug — the agent's tool queries stay scoped to
   # this store.
   #
-  # Synchronous MVP: the agent runs inside the request and blocks the thread for
-  # a few seconds. Phase 3 moves this to a background job + Turbo Stream push.
+  # Non-blocking: echo the question + a placeholder immediately, then run the
+  # agent in a background job that pushes the reply back over ActionCable.
   class ChatController < BaseController
     def create
       @message = params[:message].to_s.strip
-      @reply = CustomerServiceAgent.new.respond(@message) if @message.present?
+      @conversation_id = params[:conversation_id].to_s
+      @reply_dom_id = "reply_#{SecureRandom.hex(8)}"
+
+      if @message.present?
+        CustomerServiceReplyJob.perform_later(
+          tenant_id: @store.id,
+          conversation_id: @conversation_id,
+          message: @message,
+          reply_dom_id: @reply_dom_id
+        )
+      end
 
       respond_to do |format|
         format.turbo_stream

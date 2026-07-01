@@ -1,8 +1,12 @@
+<% conversation_id = SecureRandom.uuid %>
 <section id="chat" class="panel mt-16 p-6" data-reveal>
+  <%# Subscribe this page to its own reply stream; the job broadcasts here. %>
+  <%= turbo_stream_from "storefront_chat", conversation_id %>
+
   <h2 class="font-medium">Customer service</h2>
   <p class="mt-1 text-xs muted">Ask about your order status, stock, or returns.</p>
 
   <div id="chat-log" class="mt-4 space-y-2"></div>
 
-  <%= render "storefront/chat/form" %>
+  <%= render "storefront/chat/form", conversation_id: conversation_id %>
 </section>

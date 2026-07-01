@@ -1,4 +1,5 @@
 <%= form_with url: storefront_store_chat_path(@store), method: :post, id: "chat-form", class: "mt-4 flex gap-2" do |f| %>
+  <%= f.hidden_field :conversation_id, value: conversation_id %>
   <%= f.text_field :message, placeholder: "Ask a question…", autocomplete: "off", class: "field-input flex-1" %>
   <%= f.submit "Send", class: "btn" %>
 <% end %>
