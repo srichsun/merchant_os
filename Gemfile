@@ -122,3 +122,6 @@ gem "stripe"
 
 # Email via Resend's HTTP API (outbound SMTP is blocked on the host)
 gem "resend"
+
+# AI customer-service agent (LLM tool-use loop)
+gem "anthropic"
