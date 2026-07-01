@@ -71,6 +71,22 @@ RSpec.describe CustomerServiceAgent do
     end
   end
 
+  describe "#respond with product context" do
+    it "tells the model which product the customer is viewing" do
+      captured_system = nil
+      messages_api = instance_double(Anthropic::Resources::Messages)
+      allow(messages_api).to receive(:create) do |**kwargs|
+        captured_system = kwargs[:system]
+        double(content: [ double(type: :text, text: "ok") ], stop_reason: :end_turn)
+      end
+      agent = described_class.new(client: double(messages: messages_api))
+
+      agent.respond("這還有嗎", product_context: "Everyday Sneakers")
+
+      expect(captured_system).to include("Everyday Sneakers")
+    end
+  end
+
   describe "echoing the assistant turn back" do
     # The SDK's tool_use block carries an extra caller_ field the API rejects if
     # sent back verbatim; we must rebuild the turn with only accepted fields.

@@ -12,5 +12,5 @@
 
 <%# Swap the form back in empty, clearing the input. %>
 <%= turbo_stream.replace "chat-form" do %>
-  <%= render "storefront/chat/form", conversation_id: @conversation_id %>
+  <%= render "storefront/chat/form", conversation_id: @conversation_id, product_id: params[:product_id] %>
 <% end %>

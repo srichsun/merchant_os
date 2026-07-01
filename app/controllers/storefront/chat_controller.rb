@@ -16,7 +16,8 @@ module Storefront
           tenant_id: @store.id,
           conversation_id: @conversation_id,
           message: @message,
-          reply_dom_id: @reply_dom_id
+          reply_dom_id: @reply_dom_id,
+          product_name: current_product_name
         )
       end
 
@@ -24,6 +25,15 @@ module Storefront
         format.turbo_stream
         format.html { redirect_to storefront_store_path(@store) }
       end
+    end
+
+    private
+
+    # The product the customer is chatting from (tenant-scoped), if any.
+    def current_product_name
+      return if params[:product_id].blank?
+
+      Product.find_by(id: params[:product_id])&.name
     end
   end
 end

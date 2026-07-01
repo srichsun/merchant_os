@@ -1,4 +1,5 @@
 <% conversation_id = SecureRandom.uuid %>
+<% product = local_assigns[:product] %>
 <%# Floating chat widget, bottom-right. <details> gives open/close with no JS;
     the message log scrolls instead of growing the page. %>
 <div id="chat" class="fixed bottom-4 right-4 z-50 w-80 max-w-[calc(100vw-2rem)]">
@@ -13,7 +14,7 @@
     <div class="border-t border-[#1e1e1e] p-4">
       <p class="text-xs muted">Ask about your order status, stock, or returns.</p>
       <div id="chat-log" data-controller="scroll-to-bottom" class="mt-3 max-h-64 space-y-2 overflow-y-auto"></div>
-      <%= render "storefront/chat/form", conversation_id: conversation_id %>
+      <%= render "storefront/chat/form", conversation_id: conversation_id, product_id: product&.id %>
     </div>
   </details>
 </div>

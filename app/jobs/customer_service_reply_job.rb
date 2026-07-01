@@ -5,9 +5,9 @@
 class CustomerServiceReplyJob < ApplicationJob
   queue_as :default
 
-  def perform(tenant_id:, conversation_id:, message:, reply_dom_id:)
+  def perform(tenant_id:, conversation_id:, message:, reply_dom_id:, product_name: nil)
     tenant = Tenant.find(tenant_id)
-    reply = generate_reply(tenant, message)
+    reply = generate_reply(tenant, message, product_name)
 
     # Replace the "查詢中…" placeholder with the reply on the subscriber's page.
     Turbo::StreamsChannel.broadcast_replace_to(
@@ -22,8 +22,10 @@ class CustomerServiceReplyJob < ApplicationJob
 
   # Never let a failed LLM call leave the customer staring at "查詢中…" — swap in
   # a friendly message and log the cause instead.
-  def generate_reply(tenant, message)
-    ActsAsTenant.with_tenant(tenant) { CustomerServiceAgent.new.respond(message) }
+  def generate_reply(tenant, message, product_name)
+    ActsAsTenant.with_tenant(tenant) do
+      CustomerServiceAgent.new.respond(message, product_context: product_name)
+    end
   rescue StandardError => e
     Rails.logger.error("[CS_AGENT] reply failed: #{e.class} — #{e.message}")
     "抱歉，客服助理暫時無法回覆，請稍後再試。"

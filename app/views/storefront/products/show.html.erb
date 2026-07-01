@@ -8,7 +8,7 @@
         <% if @product.image.attached? %>
           <%= image_tag @product.image.variant(:card), class: "h-full w-full object-cover", alt: @product.name %>
         <% else %>
-          <%= image_tag "https://picsum.photos/seed/product#{@product.id}/1000/700", class: "h-full w-full object-cover", loading: "lazy", alt: @product.name %>
+          <%= image_tag demo_product_image(@product, width: 1000, height: 700), class: "h-full w-full object-cover", loading: "lazy", alt: @product.name %>
         <% end %>
       </div>
 
@@ -76,4 +76,4 @@
   </div>
 </div>
 
-<%= render "storefront/chat/chat" %>
+<%= render "storefront/chat/chat", product: @product %>

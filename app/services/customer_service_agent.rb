@@ -61,14 +61,16 @@ class CustomerServiceAgent
   end
 
   # Run the agent loop and return the assistant's final reply text.
-  def respond(question)
+  # product_context: the name of the product the customer is currently viewing,
+  # so "is this in stock?" resolves without asking which item they mean.
+  def respond(question, product_context: nil)
     messages = [ { role: "user", content: question } ]
 
     MAX_TURNS.times do
       response = @client.messages.create(
         model: MODEL,
         max_tokens: 1024,
-        system: SYSTEM,
+        system: system_prompt(product_context),
         tools: TOOLS,
         messages: messages
       )
@@ -119,6 +121,14 @@ class CustomerServiceAgent
   end
 
   private
+
+  # Append the current product so pronouns like "this" resolve to it.
+  def system_prompt(product_context)
+    return SYSTEM if product_context.blank?
+
+    "#{SYSTEM}\n\n客人正在看的商品是「#{product_context}」。" \
+      "當客人用「這個」「它」「這款」等指稱時，就是指這項商品，直接查詢，不用再問是哪一項。"
+  end
 
   # Dispatch a tool call from the model to the matching Ruby method.
   def run_tool(name, input)

@@ -36,6 +36,18 @@ RSpec.describe CustomerServiceReplyJob do
     end.not_to raise_error
   end
 
+  it "passes the current product to the agent as context" do
+    agent = instance_double(CustomerServiceAgent)
+    allow(CustomerServiceAgent).to receive(:new).and_return(agent)
+    allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
+    expect(agent).to receive(:respond).with("is this in stock", product_context: "Sneakers").and_return("yes")
+
+    described_class.perform_now(
+      tenant_id: store.id, conversation_id: "c", message: "is this in stock",
+      reply_dom_id: "r", product_name: "Sneakers"
+    )
+  end
+
   it "sets the current tenant while the agent runs" do
     agent = instance_double(CustomerServiceAgent)
     allow(CustomerServiceAgent).to receive(:new).and_return(agent)
