@@ -4,25 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>document.documentElement.classList.add("js");</script>
-  <title>MerchantOS — Multi-tenant Commerce, built on Rails</title>
+  <title>flashdrop — Influencer flash sales with an AI assistant, built on Rails</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --paper: #FBFAF7;
-      --ink:   #16150F;
-      --soft:  #5B564B;
-      --faint: #938C7C;
-      --line:  #D7D0C0;
-      --line-2:#C7BFAC;
+      --paper: #0B0B0A;
+      --ink:   #F4F1EA;
+      --soft:  #B3ADA2;
+      --faint: #7C766C;
+      --line:  #26241F;
+      --line-2:#3A362F;
+      --gold:  #C9A84C;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
     body {
       background: var(--paper); color: var(--ink);
       font-family: "Archivo", "Noto Sans TC", system-ui, sans-serif;
-      font-size: 16.5px; line-height: 1.7; letter-spacing: -0.005em;
+      font-size: 18.5px; line-height: 1.75; letter-spacing: -0.005em;
     }
     ::selection { background: var(--ink); color: var(--paper); }
     a { color: inherit; text-decoration: none; }
@@ -41,7 +42,7 @@
 
     .brand { font-size: 17px; font-weight: 600; letter-spacing: .02em; }
     .brand .dim { color: var(--faint); font-weight: 500; }
-    .rail .tag { margin-top: 14px; font-size: 14px; color: var(--soft); line-height: 1.55; max-width: 235px; }
+    .rail .tag { margin-top: 16px; font-size: 15.5px; color: var(--soft); line-height: 1.6; max-width: 240px; }
 
     .langtoggle { margin-top: 22px; display: flex; align-items: center; gap: 8px; font-family: "Spline Sans Mono", monospace; font-size: 11px; letter-spacing: .08em; }
     .langtoggle button { background: none; border: none; cursor: pointer; color: var(--faint); font: inherit; padding: 2px 0; transition: color .2s ease; }
@@ -51,7 +52,7 @@
 
     .nav { margin-top: 44px; display: flex; flex-direction: column; gap: 2px; }
     .nav a {
-      font-size: 14px; color: var(--soft); padding: 7px 0; letter-spacing: .01em;
+      font-size: 15.5px; color: var(--soft); padding: 8px 0; letter-spacing: .01em;
       display: flex; align-items: center; gap: 12px; transition: color .2s ease, gap .25s ease;
     }
     .nav a::before { content: ""; width: 14px; height: 1px; background: var(--line-2); transition: width .25s ease, background .2s ease; }
@@ -67,25 +68,25 @@
     section:last-of-type { border-bottom: none; }
     .seclabel { display: block; margin-bottom: 34px; }
 
-    .statement { font-size: clamp(22px, 2.8vw, 30px); line-height: 1.32; letter-spacing: -.02em; max-width: 600px; font-weight: 600; }
-    .sub { margin-top: 22px; font-size: 16.5px; color: var(--soft); max-width: 580px; }
+    .statement { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.28; letter-spacing: -.02em; max-width: 600px; font-weight: 600; }
+    .sub { margin-top: 24px; font-size: 19px; color: var(--soft); max-width: 600px; }
 
     .stat-row { margin-top: 52px; display: flex; gap: 56px; flex-wrap: wrap; }
-    .stat .fig { font-size: 34px; font-weight: 600; letter-spacing: -.02em; }
+    .stat .fig { font-size: 42px; font-weight: 600; letter-spacing: -.02em; }
     .stat .cap { display: block; margin-top: 6px; font-size: 14px; color: var(--soft); }
 
     .list { border-top: 1px solid var(--line); }
     .item { display: grid; grid-template-columns: 38px 1fr; gap: 22px; padding: 22px 0; border-bottom: 1px solid var(--line); transition: padding-left .3s cubic-bezier(.16,1,.3,1); }
     .item:hover { padding-left: 8px; }
     .item .ix { font-family: "Spline Sans Mono", monospace; font-size: 12px; color: var(--faint); padding-top: 3px; }
-    .item h3 { font-size: 15.5px; font-weight: 600; margin-bottom: 5px; letter-spacing: -.005em; }
-    .item p { font-size: 15.5px; color: var(--soft); line-height: 1.7; max-width: 620px; }
+    .item h3 { font-size: 17.5px; font-weight: 600; margin-bottom: 6px; letter-spacing: -.005em; }
+    .item p { font-size: 17px; color: var(--soft); line-height: 1.72; max-width: 640px; }
 
     .ledger { border-top: 1px solid var(--line); }
     .lrow { display: grid; grid-template-columns: 132px 1fr; gap: 22px; padding: 22px 0; border-bottom: 1px solid var(--line); }
     .lrow .larea { font-family: "Spline Sans Mono", monospace; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); padding-top: 4px; }
-    .lrow .lchoice { font-size: 15px; font-weight: 600; margin-bottom: 5px; }
-    .lrow .lwhy { font-size: 15px; color: var(--soft); line-height: 1.62; }
+    .lrow .lchoice { font-size: 16.5px; font-weight: 600; margin-bottom: 6px; }
+    .lrow .lwhy { font-size: 16.5px; color: var(--soft); line-height: 1.62; }
 
     .flow { border-top: 1px solid var(--line); }
     .frow { display: grid; grid-template-columns: 38px 1fr; gap: 22px; padding: 20px 0; border-bottom: 1px solid var(--line); }
@@ -93,7 +94,7 @@
     .frow h3 { font-size: 14.5px; font-weight: 600; margin-bottom: 4px; }
     .frow p { font-size: 15px; color: var(--soft); }
 
-    .stack { font-family: "Spline Sans Mono", monospace; font-size: 14.5px; line-height: 2.3; color: var(--ink); }
+    .stack { font-family: "Spline Sans Mono", monospace; font-size: 17px; line-height: 2.3; color: var(--ink); }
     .stack b { color: var(--faint); font-weight: 400; padding: 0 5px; }
 
     .closing { padding: 64px 0 96px; }
@@ -118,24 +119,24 @@
 
   <aside class="rail">
     <div>
-      <div class="brand">MerchantOS<span class="dim"> ™</span></div>
-      <p class="tag" data-en="A multi-tenant e-commerce backend — a lightweight Shopify. A Ruby on Rails full-stack build." data-zh="多租戶電商後端 SaaS — 類似輕量版 Shopify。Ruby on Rails 全端作品。">A multi-tenant e-commerce backend — a lightweight Shopify. A Ruby on Rails full-stack build.</p>
+      <div class="brand">flashdrop<span class="dim"> ™</span></div>
+      <p class="tag" data-en="An influencer flash-sale marketplace, with an AI assistant that answers buyers' questions. A Ruby on Rails full-stack build." data-zh="網紅限時快閃平台,內建 AI 客服直接回答買家的商品問題。Ruby on Rails 全端作品。">An influencer flash-sale marketplace, with an AI assistant that answers buyers' questions. A Ruby on Rails full-stack build.</p>
       <div class="langtoggle">
         <button data-lang="en" class="active">EN</button><span class="sep">/</span><button data-lang="zh">中文</button>
       </div>
     </div>
     <nav class="nav">
       <a href="#overview" data-en="Overview" data-zh="概覽">Overview</a>
-      <a href="#features" data-en="Core features" data-zh="核心功能">Core features</a>
-      <a href="#checkout" data-en="Checkout" data-zh="結帳金流">Checkout</a>
+      <a href="#agent" data-en="AI agent" data-zh="AI 客服 Agent">AI agent</a>
+      <a href="#drops" data-en="Flash-sale drops" data-zh="快閃商品">Flash-sale drops</a>
+      <a href="#commerce" data-en="Commerce core" data-zh="電商核心">Commerce core</a>
       <a href="#decisions" data-en="Decisions" data-zh="技術決策">Decisions</a>
       <a href="#stack" data-en="Stack" data-zh="技術棧">Stack</a>
-      <a href="#engineering" data-en="Engineering" data-zh="工程實踐">Engineering</a>
     </nav>
     <div class="foot">
-      <a href="https://merchant-os.onrender.com/s/demo-store" target="_blank" data-en="Storefront demo ↗" data-zh="逛店面 Demo ↗">Storefront demo ↗</a>
+      <a href="https://merchant-os.onrender.com/s/how-to-beast" target="_blank" data-en="Storefront demo ↗" data-zh="逛店面 Demo ↗">Storefront demo ↗</a>
       <a href="https://merchant-os.onrender.com/" target="_blank" data-en="Admin ↗" data-zh="商家後台 ↗">Admin ↗</a>
-      <a href="https://github.com/srichsun/merchant_os" target="_blank" data-en="Source ↗" data-zh="原始碼 ↗">Source ↗</a>
+      <a href="https://github.com/srichsun/flashdrop" target="_blank" data-en="Source ↗" data-zh="原始碼 ↗">Source ↗</a>
       <div class="meta">owner@example.com / password123<br>© 2026 · Rails 8</div>
     </div>
   </aside>
@@ -144,44 +145,53 @@
 
     <section id="overview" data-reveal>
       <span class="label seclabel">Overview</span>
-      <p class="statement" data-en="One backend, many storefronts." data-zh="一套後端,撐起多家店。">One backend, many storefronts.</p>
-      <p class="sub" data-en="Merchants open a store and manage products, inventory and orders; shoppers browse, search and check out on a public storefront. Built around what matters in production — tenant isolation, oversell-safe checkout, an order state machine and signature-verified payment webhooks — all tested, on CI/CD, and running live." data-zh="商家開店,管理商品、庫存與訂單;散客在公開店面瀏覽、搜尋、結帳。圍繞實務上最關鍵的幾件事:多租戶資料隔離、並發防超賣、訂單狀態機、金流 webhook 驗章——全部有測試、有 CI/CD、線上跑得起來。">Merchants open a store and manage products, inventory and orders; shoppers browse, search and check out on a public storefront. Built around what matters in production — tenant isolation, oversell-safe checkout, an order state machine and signature-verified payment webhooks — all tested, on CI/CD, and running live.</p>
+      <p class="statement" data-en="Sell the drop. Let the AI answer." data-zh="上架快閃,問答交給 AI。">Sell the drop. Let the AI answer.</p>
+      <p class="sub" data-en="A creator opens a store, links their Instagram, and runs limited-time, limited-quantity drops. Fans land on a public product page — countdown, live stock, one-tap checkout — and an AI assistant answers their questions about the product, so the creator doesn't have to write long copy or sit in a DM inbox. Underneath: multi-tenant isolation, oversell-safe checkout, signature-verified payment webhooks — tested, on CI/CD, running live." data-zh="創作者開店、綁定 Instagram,推出限時、限量的快閃商品。粉絲進到公開商品頁——倒數計時、即時庫存、一鍵結帳——還有一個 AI 客服直接回答商品問題,讓網紅不用寫一堆文案、也不用泡在私訊裡。底層則是:多租戶隔離、並發防超賣、金流 webhook 驗章——全部有測試、有 CI/CD、線上跑得起來。">A creator opens a store, links their Instagram, and runs limited-time, limited-quantity drops. Fans land on a public product page — countdown, live stock, one-tap checkout — and an AI assistant answers their questions about the product, so the creator doesn't have to write long copy or sit in a DM inbox. Underneath: multi-tenant isolation, oversell-safe checkout, signature-verified payment webhooks — tested, on CI/CD, running live.</p>
       <div class="stat-row">
-        <div class="stat"><span class="fig">63</span><span class="cap" data-en="tests, all green" data-zh="自動化測試全綠">tests, all green</span></div>
-        <div class="stat"><span class="fig">2</span><span class="cap" data-en="gateways · Stripe / ECPay" data-zh="金流可選 · Stripe / 綠界">gateways · Stripe / ECPay</span></div>
+        <div class="stat"><span class="fig">95</span><span class="cap" data-en="tests, all green" data-zh="自動化測試全綠">tests, all green</span></div>
+        <div class="stat"><span class="fig">3</span><span class="cap" data-en="agent tools · read-only" data-zh="agent 工具 · 唯讀">agent tools · read-only</span></div>
         <div class="stat"><span class="fig">0</span><span class="cap" data-en="oversells · pessimistic lock" data-zh="超賣 · 悲觀鎖把關">oversells · pessimistic lock</span></div>
       </div>
     </section>
 
-    <section id="features" data-reveal>
-      <span class="label seclabel" data-en="01 — Core features" data-zh="01 — 核心功能">01 — Core features</span>
+    <section id="agent" data-reveal>
+      <span class="label seclabel" data-en="01 — AI customer-service agent" data-zh="01 — AI 客服 Agent">01 — AI customer-service agent</span>
+      <p class="statement" style="font-size:19px;margin-bottom:30px;" data-en="An agent is an LLM plus your own tools plus a loop — hand-built, not a black box." data-zh="agent 就是 LLM + 自己的工具 + 一個迴圈——手刻的,不是黑盒子。">An agent is an LLM plus your own tools plus a loop — hand-built, not a black box.</p>
       <div class="list">
-        <div class="item"><span class="ix">01</span><div><h3 data-en="Multi-tenant isolation" data-zh="多租戶隔離">Multi-tenant isolation</h3><p data-en="Row-level isolation with acts_as_tenant; each store only sees its own data. The admin resolves the tenant from the login, the storefront from the URL slug." data-zh="acts_as_tenant 行級隔離,每間店只看得到自己的資料;後台靠登入定租戶,店面靠網址 slug 定租戶。">Row-level isolation with acts_as_tenant; each store only sees its own data. The admin resolves the tenant from the login, the storefront from the URL slug.</p></div></div>
-        <div class="item"><span class="ix">02</span><div><h3 data-en="Oversell protection" data-zh="並發防超賣">Oversell protection</h3><p data-en="Checkout decrements stock under a pessimistic lock (SELECT … FOR UPDATE); concurrent buyers can't drive it negative. Covered by a race-condition spec." data-zh="結帳用悲觀鎖(SELECT … FOR UPDATE)扣庫存,並發搶購不會扣成負數,附 race condition 測試。">Checkout decrements stock under a pessimistic lock (SELECT … FOR UPDATE); concurrent buyers can't drive it negative. Covered by a race-condition spec.</p></div></div>
-        <div class="item"><span class="ix">03</span><div><h3 data-en="Order state machine" data-zh="訂單狀態機">Order state machine</h3><p data-en="AASM drives pending → paid → shipped; a failed payment rolls back the whole transition, and duplicate webhooks are ignored." data-zh="AASM 管理 pending → paid → shipped,付款失敗整筆 rollback、重複回呼不重複處理。">AASM drives pending → paid → shipped; a failed payment rolls back the whole transition, and duplicate webhooks are ignored.</p></div></div>
-        <div class="item"><span class="ix">04</span><div><h3 data-en="Background job chain" data-zh="背景任務鏈">Background job chain</h3><p data-en="On payment: notify the store → email the buyer → queue fulfillment, as a chain of background jobs." data-zh="付款成功後觸發:通知店家 → 寄買家確認信 → 出貨準備的 job 鏈。">On payment: notify the store → email the buyer → queue fulfillment, as a chain of background jobs.</p></div></div>
-        <div class="item"><span class="ix">05</span><div><h3 data-en="Product search" data-zh="商品搜尋">Product search</h3><p data-en="pg_search with Postgres trigram — partial and Chinese matching, no Elasticsearch." data-zh="pg_search 以 Postgres trigram 搜尋,支援部分比對與中文,不另外架 Elasticsearch。">pg_search with Postgres trigram — partial and Chinese matching, no Elasticsearch.</p></div></div>
-        <div class="item"><span class="ix">06</span><div><h3 data-en="Storefront + checkout" data-zh="公開店面 + 結帳">Storefront + checkout</h3><p data-en="A public, login-free storefront to browse, search and order; checkout with a choice of Stripe or ECPay, with an email confirmation." data-zh="免登入店面,瀏覽 / 搜尋 / 下單;結帳可選 Stripe 或綠界,付款後寄出確認信。">A public, login-free storefront to browse, search and order; checkout with a choice of Stripe or ECPay, with an email confirmation.</p></div></div>
-        <div class="item"><span class="ix">07</span><div><h3 data-en="Images + caching" data-zh="商品圖片 + 快取">Images + caching</h3><p data-en="Product images on Tigris (S3-compatible) via Active Storage; storefront cards use fragment caching." data-zh="圖片用 Active Storage 存 Tigris(S3 相容);店面商品卡用片段快取加速。">Product images on Tigris (S3-compatible) via Active Storage; storefront cards use fragment caching.</p></div></div>
-        <div class="item"><span class="ix">08</span><div><h3 data-en="Transactional email" data-zh="交易信件">Transactional email</h3><p data-en="Buyer confirmation sent via Resend's HTTP API — the host blocks SMTP, so it goes over the API on port 443." data-zh="付款成功後用 Resend HTTP API 寄買家確認信(主機擋 SMTP,改走 API,port 443 不被擋)。">Buyer confirmation sent via Resend's HTTP API — the host blocks SMTP, so it goes over the API on port 443.</p></div></div>
-        <div class="item"><span class="ix">09</span><div><h3 data-en="REST API + live dashboard" data-zh="REST API + 即時看板">REST API + live dashboard</h3><p data-en="A JSON API (JWT + rack-attack); the admin order list updates in real time over Turbo Streams + Action Cable." data-zh="對外 JSON API(JWT + rack-attack 限流);後台訂單用 Turbo Streams + ActionCable 即時更新。">A JSON API (JWT + rack-attack); the admin order list updates in real time over Turbo Streams + Action Cable.</p></div></div>
+        <div class="item"><span class="ix">01</span><div><h3 data-en="Tool-use loop (Anthropic Claude)" data-zh="Tool-use 迴圈(Anthropic Claude)">Tool-use loop (Anthropic Claude)</h3><p data-en="A hand-written loop: send the conversation to the model, it decides which tool to call, we run the Ruby method, feed the result back, repeat until it has an answer. The SDK's higher-level runner hides the loop I wanted to own." data-zh="手寫的迴圈:把對話送給模型 → 它決定呼叫哪個工具 → 我方跑那個 Ruby method → 把結果餵回 → 直到有答案。SDK 的高階 runner 把我想自己掌握的那層藏起來了。">A hand-written loop: send the conversation to the model, it decides which tool to call, we run the Ruby method, feed the result back, repeat until it has an answer. The SDK's higher-level runner hides the loop I wanted to own.</p></div></div>
+        <div class="item"><span class="ix">02</span><div><h3 data-en="Tenant-scoped &amp; read-only" data-zh="租戶隔離 + 唯讀">Tenant-scoped &amp; read-only</h3><p data-en="The tools are plain Ruby methods that read this store's data — order status, live stock, return policy — each auto-scoped by acts_as_tenant. No tool can place an order or issue a refund, so the agent is safe by construction. Cross-store isolation is proven by specs." data-zh="工具就是讀「這家店」資料的 Ruby method——訂單狀態、即時庫存、退換貨政策——每個查詢都被 acts_as_tenant 自動加上租戶範圍。沒有工具能下單或退款,所以 agent 天生安全。跨店隔離有測試背書。">The tools are plain Ruby methods that read this store's data — order status, live stock, return policy — each auto-scoped by acts_as_tenant. No tool can place an order or issue a refund, so the agent is safe by construction. Cross-store isolation is proven by specs.</p></div></div>
+        <div class="item"><span class="ix">03</span><div><h3 data-en="Product-aware" data-zh="知道當前商品">Product-aware</h3><p data-en="On a drop page the agent is given the product in context, so &quot;is this still available?&quot; resolves without asking which item the buyer means." data-zh="在商品頁,agent 會拿到當前商品的 context,所以「這還有嗎」不用反問客人是哪一項就能回答。">On a drop page the agent is given the product in context, so &quot;is this still available?&quot; resolves without asking which item the buyer means.</p></div></div>
+        <div class="item"><span class="ix">04</span><div><h3 data-en="Off-request, streamed back" data-zh="離開 request、串流回覆">Off-request, streamed back</h3><p data-en="A synchronous LLM call would block a web thread for seconds. Instead the request only enqueues a background job; the job runs the loop and broadcasts the reply back to the browser over Action Cable — the placeholder swaps to the answer live." data-zh="同步呼叫 LLM 會卡住 web 執行緒好幾秒。所以 request 只負責派一個背景 job;job 跑完迴圈,用 Action Cable 把回覆即時推回瀏覽器——「查詢中…」就地換成答案。">A synchronous LLM call would block a web thread for seconds. Instead the request only enqueues a background job; the job runs the loop and broadcasts the reply back to the browser over Action Cable — the placeholder swaps to the answer live.</p></div></div>
+        <div class="item"><span class="ix">05</span><div><h3 data-en="Guardrails" data-zh="護欄">Guardrails</h3><p data-en="A loop cap stops a misbehaving model from spinning forever; a rescue turns an API timeout into a friendly message instead of a stuck spinner." data-zh="迴圈上限避免模型無限打轉;錯誤 rescue 把 API 逾時變成友善訊息,而不是卡住的轉圈。">A loop cap stops a misbehaving model from spinning forever; a rescue turns an API timeout into a friendly message instead of a stuck spinner.</p></div></div>
       </div>
     </section>
 
-    <section id="checkout" data-reveal>
-      <span class="label seclabel" data-en="02 — Checkout" data-zh="02 — 結帳金流">02 — Checkout</span>
-      <p class="statement" style="font-size:19px;margin-bottom:30px;" data-en="Pluggable payments — Stripe and ECPay behind one order flow." data-zh="可插拔的金流:Stripe 與綠界共用同一套訂單流程。">Pluggable payments — Stripe and ECPay behind one order flow.</p>
-      <div class="flow">
-        <div class="frow"><span class="fn">01</span><div><h3 data-en="Create order" data-zh="建立訂單">Create order</h3><p data-en="Create a pending order and a reference, and pick a gateway." data-zh="結帳先建一筆 pending 訂單與交易編號,並選付款方式。">Create a pending order and a reference, and pick a gateway.</p></div></div>
-        <div class="frow"><span class="fn">02</span><div><h3 data-en="Redirect to gateway" data-zh="導去金流">Redirect to gateway</h3><p data-en="Redirect to Stripe Checkout or ECPay; the buyer pays on the gateway." data-zh="導到 Stripe Checkout 或綠界付款頁,買家在金流端完成付款。">Redirect to Stripe Checkout or ECPay; the buyer pays on the gateway.</p></div></div>
-        <div class="frow"><span class="fn">03</span><div><h3 data-en="Verify webhook" data-zh="驗證 webhook">Verify webhook</h3><p data-en="The gateway calls back; the server verifies the signature (Stripe signature / ECPay CheckMacValue)." data-zh="金流 server 回呼,後端驗簽章(Stripe signature / 綠界 CheckMacValue),確認沒被竄改。">The gateway calls back; the server verifies the signature (Stripe signature / ECPay CheckMacValue).</p></div></div>
-        <div class="frow"><span class="fn">04</span><div><h3 data-en="Mark paid" data-zh="標記付款">Mark paid</h3><p data-en="Only a verified webhook flips the order to paid; duplicate callbacks are ignored." data-zh="驗證通過才轉為 paid 並觸發通知;重複回呼不重複處理。">Only a verified webhook flips the order to paid; duplicate callbacks are ignored.</p></div></div>
+    <section id="drops" data-reveal>
+      <span class="label seclabel" data-en="02 — Flash-sale drops" data-zh="02 — 快閃商品">02 — Flash-sale drops</span>
+      <div class="list">
+        <div class="item"><span class="ix">01</span><div><h3 data-en="Influencer identity" data-zh="網紅身分">Influencer identity</h3><p data-en="Each store links a public Instagram profile — handle, verified badge, avatar; the whole header links out to the real IG page." data-zh="每家店綁一個公開 Instagram——帳號、藍勾勾、頭像;整個 header 點了跳到真的 IG 頁。">Each store links a public Instagram profile — handle, verified badge, avatar; the whole header links out to the real IG page.</p></div></div>
+        <div class="item"><span class="ix">02</span><div><h3 data-en="One product, one page, no cart" data-zh="一商品一頁、無購物車">One product, one page, no cart</h3><p data-en="A dedicated drop page: original vs. limited price with a discount, remaining stock, and a buy action that goes straight to checkout." data-zh="專屬商品頁:原價 vs 限量價(含折扣)、剩餘庫存、直接進結帳的搶購按鈕。">A dedicated drop page: original vs. limited price with a discount, remaining stock, and a buy action that goes straight to checkout.</p></div></div>
+        <div class="item"><span class="ix">03</span><div><h3 data-en="Live countdown &amp; states" data-zh="即時倒數與狀態">Live countdown &amp; states</h3><p data-en="A Stimulus timer counts down to the sale start or end and reloads at zero; the button is gated on a computed status — upcoming, on sale, sold out, ended — that's a function of the clock and stock, never a stored column." data-zh="Stimulus 計時器倒數到開賣/結束、歸零自動 reload;按鈕依「算出來的」狀態控制——即將開賣/熱賣中/售完/結束——那是時間與庫存的函數,不是存起來的欄位。">A Stimulus timer counts down to the sale start or end and reloads at zero; the button is gated on a computed status — upcoming, on sale, sold out, ended — that's a function of the clock and stock, never a stored column.</p></div></div>
+      </div>
+    </section>
+
+    <section id="commerce" data-reveal>
+      <span class="label seclabel" data-en="03 — Commerce core" data-zh="03 — 電商核心">03 — Commerce core</span>
+      <div class="list">
+        <div class="item"><span class="ix">01</span><div><h3 data-en="Multi-tenant isolation" data-zh="多租戶隔離">Multi-tenant isolation</h3><p data-en="Row-level isolation with acts_as_tenant; each store only sees its own data. The admin resolves the tenant from the login, the storefront from the URL slug." data-zh="acts_as_tenant 行級隔離,每間店只看得到自己的資料;後台靠登入定租戶,店面靠網址 slug 定租戶。">Row-level isolation with acts_as_tenant; each store only sees its own data. The admin resolves the tenant from the login, the storefront from the URL slug.</p></div></div>
+        <div class="item"><span class="ix">02</span><div><h3 data-en="Oversell protection" data-zh="並發防超賣">Oversell protection</h3><p data-en="A drop rush is high contention. Checkout decrements stock under a pessimistic lock (SELECT … FOR UPDATE); concurrent buyers can't drive it negative. Covered by a threaded race-condition spec." data-zh="搶購就是高併發。結帳用悲觀鎖(SELECT … FOR UPDATE)扣庫存,並發搶購不會扣成負數,附多執行緒 race-condition 測試。">A drop rush is high contention. Checkout decrements stock under a pessimistic lock (SELECT … FOR UPDATE); concurrent buyers can't drive it negative. Covered by a threaded race-condition spec.</p></div></div>
+        <div class="item"><span class="ix">03</span><div><h3 data-en="Payments — Stripe + ECPay" data-zh="金流 — Stripe + 綠界">Payments — Stripe + ECPay</h3><p data-en="Pluggable: create a pending order → redirect to the chosen gateway → verify the callback's signature (Stripe signature / ECPay CheckMacValue) → only then mark paid. The browser redirect is never trusted; duplicate webhooks are ignored." data-zh="可插拔:建 pending 訂單 → 導到選定金流 → 驗回呼簽章(Stripe signature / 綠界 CheckMacValue)→ 通過才標記已付款。瀏覽器導回不被信任;重複回呼不重複處理。">Pluggable: create a pending order → redirect to the chosen gateway → verify the callback's signature (Stripe signature / ECPay CheckMacValue) → only then mark paid. The browser redirect is never trusted; duplicate webhooks are ignored.</p></div></div>
+        <div class="item"><span class="ix">04</span><div><h3 data-en="Order state machine + jobs" data-zh="訂單狀態機 + 背景任務">Order state machine + jobs</h3><p data-en="AASM drives pending → paid → shipped; on payment a chain of background jobs notifies the store, emails the buyer (Resend HTTP API — the host blocks SMTP), and queues fulfillment." data-zh="AASM 管理 pending → paid → shipped;付款後由 job 鏈通知店家、寄買家信(Resend HTTP API,主機擋 SMTP)、排出貨。">AASM drives pending → paid → shipped; on payment a chain of background jobs notifies the store, emails the buyer (Resend HTTP API — the host blocks SMTP), and queues fulfillment.</p></div></div>
+        <div class="item"><span class="ix">05</span><div><h3 data-en="REST API + Postgres-native infra" data-zh="REST API + Postgres 原生基礎">REST API + Postgres-native infra</h3><p data-en="A JSON API (JWT + rack-attack). Solid Cache and Solid Cable keep cache and Action Cable in Postgres, so the free tier runs with no Redis; images live on Tigris (S3) via Active Storage." data-zh="對外 JSON API(JWT + rack-attack)。Solid Cache / Solid Cable 把快取與 Action Cable 放進 Postgres,免費方案不用 Redis;圖片用 Active Storage 存 Tigris(S3)。">A JSON API (JWT + rack-attack). Solid Cache and Solid Cable keep cache and Action Cable in Postgres, so the free tier runs with no Redis; images live on Tigris (S3) via Active Storage.</p></div></div>
       </div>
     </section>
 
     <section id="decisions" data-reveal>
-      <span class="label seclabel" data-en="03 — Technical decisions" data-zh="03 — 技術決策">03 — Technical decisions</span>
+      <span class="label seclabel" data-en="04 — Technical decisions" data-zh="04 — 技術決策">04 — Technical decisions</span>
       <div class="ledger">
+        <div class="lrow"><div class="larea" data-en="AI agent" data-zh="AI agent">AI agent</div><div><div class="lchoice" data-en="Claude + hand-written tool-use loop" data-zh="Claude + 手寫 tool-use 迴圈">Claude + hand-written tool-use loop</div><div class="lwhy" data-en="Full control over the tools, tenant scoping and the read-only boundary; the SDK's runner hides the loop." data-zh="完全掌控工具、租戶隔離與唯讀邊界;SDK 的 runner 把那層迴圈藏起來。">Full control over the tools, tenant scoping and the read-only boundary; the SDK's runner hides the loop.</div></div></div>
+        <div class="lrow"><div class="larea" data-en="Agent latency" data-zh="Agent 延遲">Agent latency</div><div><div class="lchoice" data-en="Background job + Action Cable" data-zh="背景 job + Action Cable">Background job + Action Cable</div><div class="lwhy" data-en="A synchronous LLM call would block a web thread for seconds." data-zh="同步呼叫 LLM 會卡住 web 執行緒好幾秒。">A synchronous LLM call would block a web thread for seconds.</div></div></div>
+        <div class="lrow"><div class="larea" data-en="Sale status" data-zh="快閃狀態">Sale status</div><div><div class="lchoice" data-en="Computed on read" data-zh="讀取時計算">Computed on read</div><div class="lwhy" data-en="Storing it needs a scheduler to flip it at the exact second." data-zh="存起來就得排程在準確的秒數翻欄位。">Storing it needs a scheduler to flip it at the exact second.</div></div></div>
         <div class="lrow"><div class="larea" data-en="Multi-tenancy" data-zh="多租戶">Multi-tenancy</div><div><div class="lchoice" data-en="acts_as_tenant (row-level)" data-zh="acts_as_tenant 行級隔離">acts_as_tenant (row-level)</div><div class="lwhy" data-en="Apartment's schema-per-tenant needs a migration per schema as stores grow." data-zh="不用 Apartment schema 隔離:商家一多,每張表都要逐 schema 跑 migration。">Apartment's schema-per-tenant needs a migration per schema as stores grow.</div></div></div>
         <div class="lrow"><div class="larea" data-en="Search" data-zh="搜尋">Search</div><div><div class="lchoice" data-en="pg_search trigram" data-zh="pg_search trigram">pg_search trigram</div><div class="lwhy" data-en="No need to run an Elasticsearch cluster at this scale." data-zh="不用 Elasticsearch:這規模不需要多養一個叢集、吃記憶體。">No need to run an Elasticsearch cluster at this scale.</div></div></div>
         <div class="lrow"><div class="larea" data-en="Orders" data-zh="訂單">Orders</div><div><div class="lchoice" data-en="AASM state machine" data-zh="AASM 狀態機">AASM state machine</div><div class="lwhy" data-en="Explicit, testable states beat a hand-rolled enum + if." data-zh="狀態與轉移顯式、好讀好測,勝過土砲 enum + if。">Explicit, testable states beat a hand-rolled enum + if.</div></div></div>
@@ -195,12 +205,12 @@
     </section>
 
     <section id="stack" data-reveal>
-      <span class="label seclabel" data-en="04 — Stack" data-zh="04 — 技術棧">04 — Stack</span>
-      <p class="stack">Rails 8<b>·</b>PostgreSQL<b>·</b>Hotwire<b>·</b>Devise<b>·</b>Pundit<b>·</b>acts_as_tenant<b>·</b>AASM<b>·</b>pg_search<b>·</b>Stripe<b>·</b>ECPay<b>·</b>Resend<b>·</b>Active Storage<b>·</b>Tigris<b>·</b>JWT<b>·</b>Action Cable<b>·</b>Solid Cache<b>·</b>Sidekiq<b>·</b>Sentry<b>·</b>RSpec<b>·</b>Docker<b>·</b>GitHub Actions<b>·</b>Render</p>
+      <span class="label seclabel" data-en="05 — Stack" data-zh="05 — 技術棧">05 — Stack</span>
+      <p class="stack">Rails 8<b>·</b>PostgreSQL<b>·</b>Anthropic Claude<b>·</b>AI Agent<b>·</b>Function calling<b>·</b>Hotwire<b>·</b>Stimulus<b>·</b>Devise<b>·</b>Pundit<b>·</b>acts_as_tenant<b>·</b>AASM<b>·</b>pg_search<b>·</b>Stripe<b>·</b>ECPay<b>·</b>Resend<b>·</b>Active Storage<b>·</b>Tigris<b>·</b>JWT<b>·</b>Action Cable<b>·</b>Solid Cache<b>·</b>Sentry<b>·</b>RSpec<b>·</b>Docker<b>·</b>GitHub Actions<b>·</b>Render</p>
     </section>
 
     <section id="engineering" data-reveal>
-      <span class="label seclabel" data-en="05 — Engineering" data-zh="05 — 工程實踐">05 — Engineering</span>
+      <span class="label seclabel" data-en="06 — Engineering" data-zh="06 — 工程實踐">06 — Engineering</span>
       <div class="list">
         <div class="item"><span class="ix">—</span><div><h3 data-en="Tests" data-zh="測試">Tests</h3><p data-en="RSpec + FactoryBot; every feature ships with specs, including a threaded oversell race-condition test." data-zh="RSpec + FactoryBot,每個功能都附測試,含並發防超賣的 race condition spec。">RSpec + FactoryBot; every feature ships with specs, including a threaded oversell race-condition test.</p></div></div>
         <div class="item"><span class="ix">—</span><div><h3 data-en="CI" data-zh="CI">CI</h3><p data-en="GitHub Actions: RuboCop, RSpec, Brakeman, bundler-audit, gitleaks, Docker build." data-zh="GitHub Actions:RuboCop、RSpec、Brakeman、bundler-audit、gitleaks、Docker build。">GitHub Actions: RuboCop, RSpec, Brakeman, bundler-audit, gitleaks, Docker build.</p></div></div>
@@ -209,7 +219,7 @@
     </section>
 
     <div class="closing">
-      <span class="mono">MerchantOS — multi-tenant commerce, built on Rails.</span>
+      <span class="mono">flashdrop — influencer flash sales with an AI assistant, built on Rails.</span>
     </div>
 
   </main>
